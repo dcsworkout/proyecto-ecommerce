@@ -347,7 +347,7 @@ const createProduct = async () => {
 
 const dismissWelcome = () => {
   showWelcome.value = false
-  localStorage.setItem(`welcome_dismissed_${user.value?.id}`, '1')
+  if (user.value?.email !== 'david@tiendacs.com') { localStorage.setItem(`welcome_dismissed_${user.value?.id}`, '1') }
 }
 
 const logout = () => { localStorage.removeItem('token'); localStorage.removeItem('user'); navigateTo('/login') }
@@ -356,7 +356,7 @@ onMounted(() => {
   token.value = localStorage.getItem('token') || ''
   user.value = JSON.parse(localStorage.getItem('user') || '{}')
   const dismissed = localStorage.getItem(`welcome_dismissed_${user.value?.id}`)
-  if (!dismissed) showWelcome.value = true
+  if (!dismissed || user.value?.email === 'david@tiendacs.com') showWelcome.value = true
   loadData()
 })
 </script>
