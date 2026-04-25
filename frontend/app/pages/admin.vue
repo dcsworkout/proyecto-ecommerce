@@ -136,7 +136,7 @@
               <p class="text-xs tracking-widest uppercase mb-2" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.15em;">Confirmar venta</p>
               <p class="text-xl font-bold" style="font-family: Georgia, serif; color: #1A1208;">{{ sale.product?.modelo }}</p>
               <p class="text-sm mt-1" style="color: #5C4A32; font-family: sans-serif;">Talla {{ sale.talla }} · {{ sale.color?.color }}</p>
-              <p class="text-2xl font-bold mt-2" style="font-family: Georgia, serif; color: #8B5E3C;">${{ parseFloat(sale.product?.price || 0).toFixed(0) }}</p>
+              <div class="mt-3"><p class="text-xs tracking-widest uppercase mb-1" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Precio de venta</p><div class="flex items-center gap-2"><span class="text-xl font-bold" style="color: #8B5E3C; font-family: Georgia, serif;">$</span><input v-model="salePrice" type="number" min="0" class="text-2xl font-bold border-b-2 bg-transparent focus:outline-none w-28" style="font-family: Georgia, serif; color: #8B5E3C; border-color: #C9A96E;" /></div><p v-if="salePrice != parseFloat(sale.product?.price || 0)" class="text-xs mt-1" style="color: #8B7355; font-family: sans-serif;">Precio original: ${{ parseFloat(sale.product?.price || 0).toFixed(0) }}</p></div>
             </div>
             <div v-if="saleMessage" :class="saleMessage.type === 'success' ? 'border-green-200 text-green-700' : 'border-red-200 text-red-700'"
               class="px-4 py-3 border text-sm mb-3" style="font-family: sans-serif; background: #FAF7F2;">
@@ -389,6 +389,7 @@ const step = ref(1)
 const sale = ref({ product: null, talla: '', color: null, inventoryId: '' })
 const registering = ref(false)
 const saleMessage = ref(null)
+const salePrice = ref(0)
 const activeTab = ref('ventas')
 const weekStats = ref({})
 const costsData = ref({ products: [], costs: [] })
@@ -411,7 +412,7 @@ const availableColors = computed(() => {
 
 const selectProduct = (p) => { sale.value.product = p; sale.value.talla = ''; sale.value.color = null; step.value = 2 }
 const selectTalla = (t) => { sale.value.talla = t; sale.value.color = null; step.value = 3 }
-const selectColor = (v) => { sale.value.color = v; sale.value.inventoryId = v.id; step.value = 4 }
+const selectColor = (v) => { sale.value.color = v; sale.value.inventoryId = v.id; salePrice.value = parseFloat(sale.value.product?.price || 0); step.value = 4 }
 const authHeaders = () => ({ Authorization: `Bearer ${token.value}` })
 
 const loadData = async () => {
@@ -435,7 +436,7 @@ const registerSale = async () => {
   try {
     const data = await $fetch(`${config.public.apiBase}/sales`, {
       method: 'POST', headers: authHeaders(),
-      body: { inventory_id: sale.value.inventoryId, quantity_sold: 1 }
+      body: { inventory_id: sale.value.inventoryId, quantity_sold: 1, sale_price: salePrice.value }
     })
     saleMessage.value = { type: 'success', text: data.message }
     setTimeout(() => { saleMessage.value = null; step.value = 1; sale.value = { product: null, talla: '', color: null, inventoryId: '' } }, 2500)
