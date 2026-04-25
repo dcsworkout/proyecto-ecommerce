@@ -1,33 +1,54 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex items-center justify-center">
-    <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-purple-600">Tiendas Familiares</h1>
-        <p class="text-gray-500 mt-2">Acceso para administradores</p>
-      </div>
-      <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-        {{ error }}
-      </div>
-      <form @submit.prevent="handleLogin">
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Correo</label>
-          <input v-model="email" type="email" required placeholder="maria@tienda.com"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+  <div class="min-h-screen flex flex-col" style="background: #1A1208;">
+    <div class="flex-1 flex items-center justify-center p-6">
+      <div class="w-full max-w-sm">
+        <div class="text-center mb-10">
+          <h1 class="text-2xl font-bold tracking-widest uppercase mb-2" style="color: #FAF7F2; font-family: Georgia, serif; letter-spacing: 0.15em;">TIENDAS FAMILIARES</h1>
+          <p class="text-xs tracking-widest uppercase" style="color: #C9A96E; font-family: sans-serif; letter-spacing: 0.25em;">TRADICION · ARTESANIA · YUCATAN</p>
         </div>
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Contrasena</label>
-          <input v-model="password" type="password" required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" />
+
+        <div style="border-top: 1px solid #3A2810; border-bottom: 1px solid #3A2810; padding: 2.5rem 0; margin-bottom: 2rem;">
+          <p class="text-xs tracking-widest uppercase text-center mb-6" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.2em;">Acceso Administrador</p>
+
+          <div v-if="error" class="mb-4 px-4 py-3 text-sm text-center" style="background: #2D1A0E; color: #E8A87C; font-family: sans-serif; border: 1px solid #5C3010;">
+            {{ error }}
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-xs tracking-widest uppercase mb-2" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.12em;">Correo</label>
+            <input v-model="email" type="email" required placeholder="tu@correo.com"
+              class="w-full px-4 py-3 text-sm focus:outline-none"
+              style="background: #2D2010; border: 1px solid #4A3520; color: #FAF7F2; font-family: sans-serif;"
+              @keyup.enter="handleLogin" />
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-xs tracking-widest uppercase mb-2" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.12em;">Contrasena</label>
+            <input v-model="password" type="password" required
+              class="w-full px-4 py-3 text-sm focus:outline-none"
+              style="background: #2D2010; border: 1px solid #4A3520; color: #FAF7F2; font-family: sans-serif;"
+              @keyup.enter="handleLogin" />
+          </div>
+
+          <button @click="handleLogin" :disabled="loading"
+            class="w-full py-4 text-xs tracking-widest uppercase transition disabled:opacity-50 active:scale-95"
+            style="background: #C9A96E; color: #1A1208; font-family: sans-serif; letter-spacing: 0.2em; font-weight: 600;">
+            {{ loading ? 'Iniciando...' : 'Iniciar Sesion' }}
+          </button>
         </div>
-        <button type="submit" :disabled="loading"
-          class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:opacity-50">
-          {{ loading ? 'Cargando...' : 'Iniciar sesion' }}
-        </button>
-      </form>
-      <div class="mt-6 text-center">
-        <a href="/" class="text-sm text-purple-600 hover:underline">Ver catalogo</a>
+
+        <div class="text-center">
+          <a href="/" class="text-xs tracking-widest uppercase transition hover:text-amber-400"
+            style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;">
+            Ver Catalogo →
+          </a>
+        </div>
       </div>
     </div>
+
+    <footer class="text-center py-4">
+      <p class="text-xs" style="color: #4A3520; font-family: sans-serif;">Tiendas Familiares · Yucatan</p>
+    </footer>
   </div>
 </template>
 <script setup>
