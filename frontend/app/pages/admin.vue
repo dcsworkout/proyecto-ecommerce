@@ -57,6 +57,11 @@
           :style="activeTab === 'ventas' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em;' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
           Registrar Venta
         </button>
+        <button @click="activeTab = 'domingo'"
+          class="px-6 py-3 text-xs tracking-widest uppercase transition"
+          :style="activeTab === 'domingo' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em;' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
+          Mi Domingo
+        </button>
         <button @click="activeTab = 'productos'"
           class="px-6 py-3 text-xs tracking-widest uppercase transition"
           :style="activeTab === 'productos' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em;' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
@@ -266,6 +271,10 @@ const sale = ref({ product: null, talla: '', color: null, inventoryId: '' })
 const registering = ref(false)
 const saleMessage = ref(null)
 const activeTab = ref('ventas')
+const weekStats = ref({})
+const costsData = ref({ products: [], costs: [] })
+const costosOperativos = ref(0)
+const pendingCosts = ref({})
 const showWelcome = ref(false)
 const newProduct = ref({ modelo: '', tipo: '', price: '', description: '', image_url: '' })
 const creatingProduct = ref(false)
@@ -350,6 +359,58 @@ const dismissWelcome = () => {
   if (user.value?.email !== 'david@tiendacs.com') { localStorage.setItem(`welcome_dismissed_${user.value?.id}`, '1') }
 }
 
+
+const weekDiff = (key) => {
+  const t = parseFloat(weekStats.value.this_week?.[key] || 0)
+  const l = parseFloat(weekStats.value.last_week?.[key] || 0)
+  return t - l
+}
+const getCost = (productId, field) => {
+  if (pendingCosts.value[productId]?.[field] !== undefined) return pendingCosts.value[productId][field]
+  const found = costsData.value.costs?.find(c => c.product_id === productId)
+  return found?.[field] || ''
+}
+const setCost = (productId, field, value) => {
+  if (!pendingCosts.value[productId]) pendingCosts.value[productId] = {}
+  pendingCosts.value[productId][field] = value
+}
+const getUtilidad = (p) => {
+  const costo = parseFloat(getCost(p.id, 'costo_compra') || 0)
+  return parseFloat(p.price) - costo
+}
+const getMargen = (p) => {
+  const precio = parseFloat(p.price)
+  if (!precio) return 0
+  return (getUtilidad(p) / precio) * 100
+}
+const utilidadNeta = computed(() => {
+  const ingresos = parseFloat(weekStats.value.this_week?.revenue || 0)
+  return ingresos - parseFloat(costosOperativos.value || 0)
+})
+const saveCost = async (productId) => {
+  const pending = pendingCosts.value[productId]
+  if (!pending) return
+  try {
+    await $fetch(`${config.public.apiBase}/analytics/costs`, {
+      method: 'POST', headers: authHeaders(),
+      body: { product_id: productId, costo_compra: pending.costo_compra || 0, costos_operativos: 0 }
+    })
+    await loadCosts()
+    delete pendingCosts.value[productId]
+  } catch(e) { console.error(e) }
+}
+const loadCosts = async () => {
+  try {
+    const r = await $fetch(`${config.public.apiBase}/analytics/costs`, { headers: authHeaders() })
+    costsData.value = r
+  } catch(e) {}
+}
+const loadWeekStats = async () => {
+  try {
+    const r = await $fetch(`${config.public.apiBase}/analytics/week`, { headers: authHeaders() })
+    weekStats.value = r
+  } catch(e) {}
+}
 const logout = () => { localStorage.removeItem('token'); localStorage.removeItem('user'); navigateTo('/login') }
 
 onMounted(() => {
@@ -358,5 +419,7 @@ onMounted(() => {
   const dismissed = localStorage.getItem(`welcome_dismissed_${user.value?.id}`)
   if (!dismissed || user.value?.email === 'david@tiendacs.com') showWelcome.value = true
   loadData()
+  loadWeekStats()
+  loadCosts()
 })
 </script>
