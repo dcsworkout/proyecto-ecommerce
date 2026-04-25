@@ -11,6 +11,7 @@ require('./src/config/database');
 const authRoutes = require('./src/routes/auth.routes');
 const productsRoutes = require('./src/routes/products.routes');
 const salesRoutes = require('./src/routes/sales.routes');
+const inventoryRoutes = require('./src/routes/inventory.routes');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -79,6 +80,7 @@ app.get('/api', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/sales', salesRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // ============================================
 // ERROR HANDLING
