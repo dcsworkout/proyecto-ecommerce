@@ -82,6 +82,9 @@ app.use('/api/products', productsRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/inventory', inventoryRoutes);
 
+const analyticsRoutes = require('./src/routes/analytics.routes');
+app.use('/api/analytics', analyticsRoutes);
+
 // ============================================
 // ERROR HANDLING
 // ============================================
