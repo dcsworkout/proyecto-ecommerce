@@ -41,7 +41,7 @@
         </div>
         <div class="flex items-center gap-3">
           <span class="text-xs hidden sm:block" style="color: #8B7355; font-family: sans-serif;">{{ user?.full_name }}</span>
-          <a href="/" class="text-xs border px-3 py-1.5 tracking-wider uppercase transition hover:border-white"
+          <a :href="`/${user?.shop?.slug}`" class="text-xs border px-3 py-1.5 tracking-wider uppercase transition hover:border-white"
             style="border-color: #4A3520; color: #C9A96E; font-family: sans-serif; letter-spacing: 0.12em;">Catalogo</a>
           <button @click="logout" class="text-xs border px-3 py-1.5 tracking-wider uppercase transition hover:border-white"
             style="border-color: #4A3520; color: #8B7355; font-family: sans-serif; letter-spacing: 0.12em;">Salir</button>

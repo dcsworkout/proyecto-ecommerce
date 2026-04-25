@@ -11,7 +11,7 @@
       </div>
     </nav>
 
-    <div style="background: #8B5E3C;" class="text-center py-2">
+    <div style="background: #E8D5B0;" class="text-center py-2">
       <p class="text-xs tracking-widest uppercase" style="color: #5C4A32; letter-spacing: 0.25em; font-family: sans-serif;">
         Contactanos por WhatsApp para hacer tu pedido
       </p>
