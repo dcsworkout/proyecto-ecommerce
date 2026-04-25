@@ -9,6 +9,7 @@ require('./src/config/database');
 
 // Import routes
 const authRoutes = require('./src/routes/auth.routes');
+const productsRoutes = require('./src/routes/products.routes');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -75,6 +76,7 @@ app.get('/api', (req, res) => {
 
 // Mount routes
 app.use('/api/auth', authRoutes);
+app.use('/api/products', productsRoutes);
 
 // ============================================
 // ERROR HANDLING
