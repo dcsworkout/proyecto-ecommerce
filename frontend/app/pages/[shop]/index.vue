@@ -15,7 +15,7 @@
       </div>
     </header>
 
-    <div style="background: #8B5E3C;" class="text-white text-center py-3">
+    <div style="background: #E8D5B0;" class="text-center py-3">
       <p class="text-xs tracking-widest uppercase" style="letter-spacing: 0.25em; font-family: sans-serif;">
         Contactanos por WhatsApp para hacer tu pedido
       </p>
