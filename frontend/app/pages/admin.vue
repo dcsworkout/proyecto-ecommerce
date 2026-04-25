@@ -169,6 +169,125 @@
         </div>
       </div>
 
+
+      <!-- DOMINGO TAB -->
+      <div v-if="activeTab === 'domingo'">
+
+        <!-- Esta semana vs semana pasada -->
+        <div class="grid grid-cols-3 gap-3 mb-6">
+          <div class="p-4 text-center" style="background: white; border: 1px solid #D4C4A8;">
+            <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.12em;">Ventas semana</p>
+            <p class="text-3xl font-bold" style="color: #1A1208; font-family: Georgia, serif;">{{ weekStats.this_week?.sales_count || 0 }}</p>
+            <p class="text-xs mt-1" :style="weekDiff('sales_count') >= 0 ? 'color: #5C8A3C' : 'color: #B85C5C'" style="font-family: sans-serif;">
+              {{ weekDiff('sales_count') >= 0 ? '▲' : '▼' }} {{ Math.abs(weekDiff('sales_count')) }} vs semana pasada
+            </p>
+          </div>
+          <div class="p-4 text-center" style="background: white; border: 1px solid #D4C4A8;">
+            <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.12em;">Items semana</p>
+            <p class="text-3xl font-bold" style="color: #1A1208; font-family: Georgia, serif;">{{ weekStats.this_week?.items_sold || 0 }}</p>
+            <p class="text-xs mt-1" :style="weekDiff('items_sold') >= 0 ? 'color: #5C8A3C' : 'color: #B85C5C'" style="font-family: sans-serif;">
+              {{ weekDiff('items_sold') >= 0 ? '▲' : '▼' }} {{ Math.abs(weekDiff('items_sold')) }} vs semana pasada
+            </p>
+          </div>
+          <div class="p-4 text-center" style="background: white; border: 1px solid #D4C4A8;">
+            <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.12em;">Ingresos semana</p>
+            <p class="text-2xl font-bold" style="color: #1A1208; font-family: Georgia, serif;">${{ parseFloat(weekStats.this_week?.revenue || 0).toFixed(0) }}</p>
+            <p class="text-xs mt-1" :style="weekDiff('revenue') >= 0 ? 'color: #5C8A3C' : 'color: #B85C5C'" style="font-family: sans-serif;">
+              {{ weekDiff('revenue') >= 0 ? '▲' : '▼' }} ${{ Math.abs(weekDiff('revenue')).toFixed(0) }} vs semana pasada
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+
+          <!-- Top productos -->
+          <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
+            <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Top Productos (últimas 2 semanas)</p>
+            <div v-if="!weekStats.top_products?.length" class="text-center py-8">
+              <p class="text-sm" style="color: #C9B99A; font-family: sans-serif;">Sin ventas aun</p>
+            </div>
+            <div v-else class="space-y-3">
+              <div v-for="(p, i) in weekStats.top_products" :key="i">
+                <div class="flex justify-between items-center mb-1">
+                  <p class="text-sm font-bold" style="font-family: Georgia, serif; color: #1A1208;">{{ p.modelo }}</p>
+                  <span class="text-xs" style="color: #8B5E3C; font-family: sans-serif;">{{ p.unidades }} uds</span>
+                </div>
+                <div style="background: #F0E8DC; height: 6px; border-radius: 0;">
+                  <div :style="`width: ${(p.unidades / weekStats.top_products[0].unidades) * 100}%; background: #8B5E3C; height: 6px;`"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mejores dias -->
+          <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
+            <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Mejores Días (últimas 4 semanas)</p>
+            <div v-if="!weekStats.by_day?.length" class="text-center py-8">
+              <p class="text-sm" style="color: #C9B99A; font-family: sans-serif;">Sin datos aun</p>
+            </div>
+            <div v-else class="space-y-3">
+              <div v-for="(d, i) in weekStats.by_day" :key="i">
+                <div class="flex justify-between items-center mb-1">
+                  <p class="text-sm" style="font-family: sans-serif; color: #1A1208;">{{ d.nombre_dia?.trim() }}</p>
+                  <span class="text-xs" style="color: #8B5E3C; font-family: sans-serif;">{{ d.ventas }} ventas</span>
+                </div>
+                <div style="background: #F0E8DC; height: 6px;">
+                  <div :style="`width: ${(d.ventas / weekStats.by_day[0].ventas) * 100}%; background: #C9A96E; height: 6px;`"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Utilidad calculator -->
+        <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
+          <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Calculadora de Utilidad</p>
+          <p class="text-xs mb-5" style="color: #8B7355; font-family: sans-serif;">Ingresa el costo de cada producto para calcular tu ganancia real esta semana</p>
+
+          <div v-if="!costsData.products?.length" class="text-center py-8">
+            <p class="text-sm" style="color: #C9B99A; font-family: sans-serif;">Sin productos registrados</p>
+          </div>
+          <div v-else>
+            <div class="space-y-3 mb-6">
+              <div v-for="p in costsData.products" :key="p.id" class="grid grid-cols-3 gap-3 items-center py-3" style="border-bottom: 1px solid #F0E8DC;">
+                <div>
+                  <p class="text-sm font-bold" style="font-family: Georgia, serif; color: #1A1208;">{{ p.modelo }}</p>
+                  <p class="text-xs" style="color: #8B7355; font-family: sans-serif;">Venta: ${{ parseFloat(p.price).toFixed(0) }}</p>
+                </div>
+                <div>
+                  <label class="text-xs block mb-1" style="color: #8B7355; font-family: sans-serif;">Costo compra</label>
+                  <input type="number" :value="getCost(p.id, 'costo_compra')" @input="setCost(p.id, 'costo_compra', $event.target.value)"
+                    placeholder="0"
+                    class="w-full px-3 py-2 border text-sm focus:outline-none"
+                    style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
+                </div>
+                <div class="text-right">
+                  <button @click="saveCost(p.id)"
+                    class="px-3 py-2 text-xs tracking-widest uppercase"
+                    style="background: #1A1208; color: #C9A96E; font-family: sans-serif;">
+                    Guardar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Utilidad neta -->
+            <div class="p-4" style="background: #FAF7F2; border: 1px solid #E8DFD0;">
+              <div class="flex justify-between items-center">
+                <div>
+                  <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.15em;">Utilidad neta estimada esta semana</p>
+                  <p class="text-xs" style="color: #8B7355; font-family: sans-serif;">Ingresos ${{ parseFloat(weekStats.this_week?.revenue || 0).toFixed(0) }} − costos registrados</p>
+                </div>
+                <p class="text-3xl font-bold" :style="utilidadNeta >= 0 ? 'color: #5C8A3C' : 'color: #B85C5C'" style="font-family: Georgia, serif;">
+                  ${{ utilidadNeta.toFixed(0) }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
       <!-- PRODUCTOS TAB -->
       <div v-if="activeTab === 'productos'">
         <!-- Upload banner -->
