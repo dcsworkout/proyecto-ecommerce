@@ -51,19 +51,19 @@
 
     <!-- Tab bar -->
     <div style="background: #1A1208; border-bottom: 2px solid #C9A96E;">
-      <div class="max-w-5xl mx-auto px-4 flex gap-0">
+      <div class="max-w-5xl mx-auto px-2 flex gap-0 overflow-x-auto">
         <button @click="activeTab = 'ventas'"
-          class="px-6 py-3 text-xs tracking-widest uppercase transition"
+          class="px-3 py-3 text-xs tracking-widest uppercase transition whitespace-nowrap flex-1 text-center"
           :style="activeTab === 'ventas' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em;' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
           Registrar Venta
         </button>
         <button @click="activeTab = 'domingo'"
-          class="px-6 py-3 text-xs tracking-widest uppercase transition"
+          class="px-3 py-3 text-xs tracking-widest uppercase transition whitespace-nowrap flex-1 text-center"
           :style="activeTab === 'domingo' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em;' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
           Mi Domingo
         </button>
         <button @click="activeTab = 'productos'"
-          class="px-6 py-3 text-xs tracking-widest uppercase transition"
+          class="px-3 py-3 text-xs tracking-widest uppercase transition whitespace-nowrap flex-1 text-center"
           :style="activeTab === 'productos' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em;' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
           Mis Productos
         </button>
