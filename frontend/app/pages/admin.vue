@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen" style="background: #FAF7F2;">
+  <div class="min-h-screen" style="background: #F5EFE6;">
 
     <!-- Welcome Modal -->
     <div v-if="showWelcome" class="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -33,7 +33,7 @@
     </div>
 
     <!-- Nav -->
-    <nav style="background: #1A1208; border-bottom: 1px solid #2D2010;">
+    <nav style="background: #1A1208; border-bottom: 2px solid #C9A96E;">
       <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
         <div>
           <h1 class="font-bold tracking-widest uppercase text-sm" style="color: #FAF7F2; letter-spacing: 0.15em; font-family: Georgia, serif;">Panel Admin</h1>
@@ -69,15 +69,15 @@
 
       <!-- Stats -->
       <div class="grid grid-cols-3 gap-3 mb-6">
-        <div class="bg-white p-4 text-center" style="border: 1px solid #E8DFD0;">
+        <div class="p-4 text-center" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.12em;">Ventas hoy</p>
           <p class="text-3xl font-bold" style="color: #1A1208; font-family: Georgia, serif;">{{ todayStats.sales_count || 0 }}</p>
         </div>
-        <div class="bg-white p-4 text-center" style="border: 1px solid #E8DFD0;">
+        <div class="p-4 text-center" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.12em;">Items</p>
           <p class="text-3xl font-bold" style="color: #1A1208; font-family: Georgia, serif;">{{ todayStats.items_sold || 0 }}</p>
         </div>
-        <div class="bg-white p-4 text-center" style="border: 1px solid #E8DFD0;">
+        <div class="p-4 text-center" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.12em;">Ingresos</p>
           <p class="text-2xl font-bold" style="color: #1A1208; font-family: Georgia, serif;">${{ todayStats.revenue || 0 }}</p>
         </div>
@@ -85,7 +85,7 @@
 
       <!-- VENTAS TAB -->
       <div v-if="activeTab === 'ventas'" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white p-6" style="border: 1px solid #E8DFD0;">
+        <div class="p-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Registrar Venta</p>
 
           <div v-if="step === 1">
@@ -146,7 +146,7 @@
         </div>
 
         <!-- Recent sales -->
-        <div class="bg-white p-6" style="border: 1px solid #E8DFD0;">
+        <div class="p-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Ventas Recientes</p>
           <div v-if="recentSales.length === 0" class="text-center py-10">
             <p class="text-sm" style="color: #C9B99A; font-family: sans-serif;">Sin ventas aun</p>
@@ -176,7 +176,7 @@
         </div>
 
         <!-- Add product form -->
-        <div class="bg-white p-6 mb-6" style="border: 1px solid #E8DFD0;">
+        <div class="p-6 mb-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-5" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Agregar Producto</p>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
@@ -229,7 +229,7 @@
         </div>
 
         <!-- Product list -->
-        <div class="bg-white p-6" style="border: 1px solid #E8DFD0;">
+        <div class="p-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Mis Productos ({{ products.length }})</p>
           <div v-if="products.length === 0" class="text-center py-8">
             <p class="text-sm" style="color: #C9B99A; font-family: sans-serif;">Sin productos aun</p>
