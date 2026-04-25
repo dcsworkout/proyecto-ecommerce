@@ -2,23 +2,19 @@ export const useApi = () => {
   const config = useRuntimeConfig()
   const baseURL = config.public.apiBase
 
-  const fetchProducts = async (filters = {}) => {
+  const fetchProducts = async (filters: Record<string, string> = {}) => {
     const query = new URLSearchParams(filters).toString()
-    const url = `${baseURL}/products${query ? '?' + query : ''}`
-    return await $fetch(url)
+    return await $fetch(`${baseURL}/products${query ? '?' + query : ''}`)
   }
 
-  const fetchProduct = async (id) => {
+  const fetchProduct = async (id: string) => {
     return await $fetch(`${baseURL}/products/${id}`)
   }
 
-  const fetchCategories = async () => {
-    return await $fetch(`${baseURL}/products/categories/list`)
+  const fetchCategories = async (shopSlug?: string) => {
+    const query = shopSlug ? `?shop_slug=${shopSlug}` : ''
+    return await $fetch(`${baseURL}/products/categories/list${query}`)
   }
 
-  return {
-    fetchProducts,
-    fetchProduct,
-    fetchCategories
-  }
+  return { fetchProducts, fetchProduct, fetchCategories }
 }
