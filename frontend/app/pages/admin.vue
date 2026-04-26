@@ -356,6 +356,7 @@
                     Editar
                   </button>
                 </div>
+              </div>
               <!-- Vista edición -->
               <div v-else class="p-4">
                 <p class="text-xs tracking-widest uppercase mb-3" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.15em;">Editando: {{ p.modelo }}</p>
