@@ -397,6 +397,38 @@
                   <input v-model="editProduct.description" type="text" class="w-full px-3 py-2 border text-sm focus:outline-none"
                     style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
                 </div>
+                <!-- Variantes de inventario -->
+                <div class="mb-4 mt-2" style="border: 1px solid #E8DFD0;">
+                  <p class="text-xs tracking-widest uppercase px-3 py-2" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.15em; background: #FAF7F2;">Stock / Variantes</p>
+                  <div class="divide-y" style="border-color: #F0E8DC;">
+                    <div v-for="v in variants.filter(v => v.product_id === p.id)" :key="v.id" class="flex items-center gap-2 px-3 py-2">
+                      <span class="text-xs font-bold w-8" style="font-family: Georgia, serif; color: #1A1208;">{{ v.talla }}</span>
+                      <span class="text-xs flex-1" style="color: #8B7355; font-family: sans-serif;">{{ v.color }}</span>
+                      <input type="number" :value="v.quantity" min="0"
+                        @change="updateVariantQty(v.id, $event.target.value)"
+                        class="w-16 px-2 py-1 border text-xs text-center focus:outline-none"
+                        style="border-color: #D4C4A8; font-family: sans-serif; color: #1A1208;" />
+                      <button @click="deleteVariantRow(v.id)" class="text-xs px-2 py-1" style="color: #B85C5C; font-family: sans-serif;">✕</button>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2 p-3" style="background: #FDFAF6;">
+                    <select v-model="newVariant.talla" class="px-2 py-2 border text-xs focus:outline-none" style="border-color: #D4C4A8; font-family: sans-serif; color: #1A1208;">
+                      <option value="">Talla</option>
+                      <option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>UNICA</option>
+                    </select>
+                    <input v-model="newVariant.color" type="text" placeholder="Color"
+                      class="px-2 py-2 border text-xs focus:outline-none"
+                      style="border-color: #D4C4A8; font-family: sans-serif; color: #1A1208;" />
+                    <input v-model="newVariant.quantity" type="number" placeholder="Cant."
+                      class="px-2 py-2 border text-xs focus:outline-none"
+                      style="border-color: #D4C4A8; font-family: sans-serif; color: #1A1208;" />
+                    <button @click="addVariantRow(p.id)" class="col-span-3 py-2 text-xs tracking-widest uppercase"
+                      style="background: #8B5E3C; color: #FAF7F2; font-family: sans-serif;">
+                      + Agregar variante
+                    </button>
+                  </div>
+                </div>
+
                 <div class="flex gap-2">
                   <button @click="saveEdit(p.id)" :disabled="savingEdit"
                     class="flex-1 py-3 text-xs tracking-widest uppercase disabled:opacity-50"
@@ -579,6 +611,34 @@ const toggleVisibility = async (p) => {
 const startEdit = (p) => {
   editingId.value = p.id
   editProduct.value = { modelo: p.modelo, tipo: p.tipo, price: p.price, description: p.description || "", is_visible: p.is_visible, image_url: p.image_urls?.[0] || "" }
+}
+const newVariant = ref({ talla: '', color: '', quantity: '' })
+const addVariantRow = async (product_id) => {
+  if (!newVariant.value.talla || !newVariant.value.color || !newVariant.value.quantity) return
+  try {
+    await $fetch(`${config.public.apiBase}/inventory`, {
+      method: "POST", headers: authHeaders(),
+      body: { product_id, talla: newVariant.value.talla, color: newVariant.value.color, quantity: parseInt(newVariant.value.quantity) }
+    })
+    newVariant.value = { talla: '', color: '', quantity: '' }
+    await loadData()
+  } catch(e) { console.error(e) }
+}
+const updateVariantQty = async (id, quantity) => {
+  try {
+    await $fetch(`${config.public.apiBase}/inventory/${id}`, {
+      method: "PUT", headers: authHeaders(), body: { quantity: parseInt(quantity) }
+    })
+    await loadData()
+  } catch(e) { console.error(e) }
+}
+const deleteVariantRow = async (id) => {
+  try {
+    await $fetch(`${config.public.apiBase}/inventory/${id}`, {
+      method: "DELETE", headers: authHeaders()
+    })
+    await loadData()
+  } catch(e) { console.error(e) }
 }
 const saveEdit = async (id) => {
   savingEdit.value = true
