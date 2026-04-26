@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen" style="background: #FAF7F2;">
-    <nav style="background: #1A1208;">
+    <nav style="background: #2C1810;">
       <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
         <div>
           <h1 class="font-bold tracking-widest uppercase text-sm" style="color: #FAF7F2; letter-spacing: 0.15em; font-family: Georgia, serif;">TIENDAS FAMILIARES</h1>
