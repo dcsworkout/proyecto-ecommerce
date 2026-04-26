@@ -114,7 +114,7 @@
       </div>
     </div>
 
-    <footer style="background: #1A1208; color: #C9A96E;" class="py-10">
+    <footer style="background: #2C1810; color: #C9A96E;" class="py-10">
       <div class="max-w-5xl mx-auto px-6 text-center">
         <p class="tracking-widest uppercase text-sm" style="letter-spacing: 0.2em; font-family: Georgia, serif;">Tiendas Familiares</p>
         <p class="text-xs mt-1 tracking-widest" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;">Tradicion yucateca · Hecho con amor</p>

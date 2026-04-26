@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen" style="background: #FAF7F2; color: #1A1208; font-family: 'Georgia', serif;">
 
-    <header style="background: #1A1208;" class="text-white">
+    <header style="background: #2C1810;" class="text-white">
       <div class="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
         <div>
           <NuxtLink to="/" class="block">
@@ -98,7 +98,7 @@
       </div>
     </main>
 
-    <footer style="background: #1A1208; color: #C9A96E;" class="py-12 mt-16">
+    <footer style="background: #2C1810; color: #C9A96E;" class="py-12 mt-16">
       <div class="max-w-6xl mx-auto px-6 text-center">
         <p class="text-xl tracking-widest uppercase mb-2" style="letter-spacing: 0.2em;">Tiendas Familiares</p>
         <p class="text-xs tracking-widest" style="font-family: sans-serif; color: #8B7355; letter-spacing: 0.15em;">Tradicion yucateca · Hecho con amor</p>

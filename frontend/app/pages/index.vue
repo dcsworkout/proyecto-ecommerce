@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col" style="background: #FAF7F2; color: #1A1208; font-family: 'Georgia', serif;">
-    <header style="background: #1A1208;" class="text-white">
+    <header style="background: #2C1810;" class="text-white">
       <div class="max-w-6xl mx-auto px-6 py-10 text-center">
         <h1 class="text-3xl font-bold tracking-widest uppercase" style="letter-spacing: 0.2em;">Tiendas Familiares</h1>
         <p class="text-xs tracking-widest uppercase mt-2" style="color: #C9A96E; letter-spacing: 0.25em;">Tradicion · Artesania · Yucatan</p>
@@ -28,7 +28,7 @@
       </div>
     </main>
 
-    <footer style="background: #1A1208; color: #C9A96E;" class="py-10">
+    <footer style="background: #2C1810; color: #C9A96E;" class="py-10">
       <div class="max-w-6xl mx-auto px-6 text-center">
         <p class="text-sm tracking-widest uppercase" style="letter-spacing: 0.2em;">Tiendas Familiares</p>
         <p class="text-xs mt-1 tracking-widest" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;">Tradicion yucateca · Hecho con amor</p>
