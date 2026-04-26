@@ -92,7 +92,7 @@
         <div class="p-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Registrar Venta</p>
           <div v-if="step === 1">
-            <p class="text-xs mb-3" style="color: #8B7355; font-family: sans-serif;">Selecciona el producto</p>
+            <p class="text-sm font-bold mb-4" style="color: #1A1208; font-family: Georgia, serif;">Selecciona el producto</p>
             <div class="grid grid-cols-1 gap-2">
               <button v-for="p in products" :key="p.id" @click="selectProduct(p)"
                 class="text-left p-4 border transition active:scale-95 w-full"
@@ -104,7 +104,7 @@
           </div>
           <div v-if="step === 2">
             <button @click="step = 1" class="text-xs mb-4 flex items-center gap-1" style="color: #8B5E3C; font-family: sans-serif;">← Atras</button>
-            <p class="text-xs mb-3" style="color: #8B7355; font-family: sans-serif;">{{ sale.product?.modelo }} — Selecciona talla</p>
+            <p class="text-sm font-bold mb-4" style="color: #1A1208; font-family: Georgia, serif;">{{ sale.product?.modelo }} — Selecciona talla</p>
             <div class="grid grid-cols-4 gap-2">
               <button v-for="t in availableTallas" :key="t" @click="selectTalla(t)"
                 class="py-4 text-sm font-bold border transition active:scale-95"
@@ -115,7 +115,7 @@
           </div>
           <div v-if="step === 3">
             <button @click="step = 2" class="text-xs mb-4 flex items-center gap-1" style="color: #8B5E3C; font-family: sans-serif;">← Atras</button>
-            <p class="text-xs mb-3" style="color: #8B7355; font-family: sans-serif;">Talla {{ sale.talla }} — Selecciona color</p>
+            <p class="text-sm font-bold mb-4" style="color: #1A1208; font-family: Georgia, serif;">Talla {{ sale.talla }} — Selecciona color</p>
             <div class="grid grid-cols-2 gap-2">
               <button v-for="v in availableColors" :key="v.id" @click="selectColor(v)"
                 class="p-3 text-left border transition active:scale-95"
@@ -132,6 +132,7 @@
               <p class="text-xl font-bold" style="font-family: Georgia, serif; color: #1A1208;">{{ sale.product?.modelo }}</p>
               <p class="text-sm mt-1" style="color: #5C4A32; font-family: sans-serif;">Talla {{ sale.talla }} · {{ sale.color?.color }}</p>
               <div class="mt-3"><p class="text-xs tracking-widest uppercase mb-1" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Precio de venta</p><div class="flex items-center gap-2"><span class="text-xl font-bold" style="color: #8B5E3C; font-family: Georgia, serif;">$</span><input v-model="salePrice" type="number" min="0" class="text-2xl font-bold border-b-2 bg-transparent focus:outline-none w-28" style="font-family: Georgia, serif; color: #8B5E3C; border-color: #C9A96E;" /></div><p v-if="salePrice != parseFloat(sale.product?.price || 0)" class="text-xs mt-1" style="color: #8B7355; font-family: sans-serif;">Precio original: ${{ parseFloat(sale.product?.price || 0).toFixed(0) }}</p></div>
+              <div class="mt-3"><p class="text-xs tracking-widest uppercase mb-1" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Cantidad</p><div class="flex items-center gap-2"><input v-model="saleQuantity" type="number" min="1" class="text-2xl font-bold border-b-2 bg-transparent focus:outline-none w-16" style="font-family: Georgia, serif; color: #1A1208; border-color: #C9A96E;" /><span class="text-sm" style="color: #8B7355; font-family: sans-serif;">unidades</span></div></div>
             </div>
             <div v-if="saleMessage" :class="saleMessage.type === 'success' ? 'border-green-200 text-green-700' : 'border-red-200 text-red-700'"
               class="px-4 py-3 border text-sm mb-3" style="font-family: sans-serif; background: #FAF7F2;">
@@ -503,6 +504,7 @@ const sale = ref({ product: null, talla: '', color: null, inventoryId: '' })
 const registering = ref(false)
 const saleMessage = ref(null)
 const salePrice = ref(0)
+const saleQuantity = ref(1)
 const activeTab = ref('ventas')
 const weekStats = ref({})
 const costsData = ref({ products: [], costs: [] })
@@ -530,7 +532,7 @@ const availableColors = computed(() => {
 })
 const selectProduct = (p) => { sale.value.product = p; sale.value.talla = ''; sale.value.color = null; step.value = 2 }
 const selectTalla = (t) => { sale.value.talla = t; sale.value.color = null; step.value = 3 }
-const selectColor = (v) => { sale.value.color = v; sale.value.inventoryId = v.id; salePrice.value = parseFloat(sale.value.product?.price || 0); step.value = 4 }
+const selectColor = (v) => { sale.value.color = v; sale.value.inventoryId = v.id; salePrice.value = parseFloat(sale.value.product?.price || 0); saleQuantity.value = 1; step.value = 4 }
 const authHeaders = () => ({ Authorization: `Bearer ${token.value}` })
 const loadData = async () => {
   const [prods, stats, sales] = await Promise.all([
@@ -552,7 +554,7 @@ const registerSale = async () => {
   try {
     const data = await $fetch(`${config.public.apiBase}/sales`, {
       method: 'POST', headers: authHeaders(),
-      body: { inventory_id: sale.value.inventoryId, quantity_sold: 1, sale_price: salePrice.value }
+      body: { inventory_id: sale.value.inventoryId, quantity_sold: saleQuantity.value, sale_price: salePrice.value }
     })
     saleMessage.value = { type: 'success', text: data.message }
     setTimeout(() => { saleMessage.value = null; step.value = 1; sale.value = { product: null, talla: '', color: null, inventoryId: '' } }, 2500)
