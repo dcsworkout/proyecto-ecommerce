@@ -596,7 +596,7 @@ const saveEdit = async (id) => {
 }
 const dismissWelcome = () => {
   showWelcome.value = false
-  localStorage.setItem(`welcome_dismissed_${user.value?.id}`, '1') }
+  localStorage.setItem(`welcome_dismissed_${user.value?.id}`, '1')
 }
 
 
