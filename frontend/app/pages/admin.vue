@@ -92,14 +92,52 @@
         <div class="p-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Registrar Venta</p>
           <div v-if="step === 1">
+            <div class="flex gap-2 mb-4">
+              <button @click="freeMode = false; freeNombre = ''; freeCategoria = ''"
+                class="flex-1 py-2 text-xs tracking-widest uppercase transition"
+                :style="!freeMode ? 'background:#1A1208;color:#C9A96E' : 'background:#F5EDE0;color:#8B5E3C;border:1px solid #D4C4A8'">
+                Del catálogo
+              </button>
+              <button @click="freeMode = true; salePrice = 0; saleQuantity = 1"
+                class="flex-1 py-2 text-xs tracking-widest uppercase transition"
+                :style="freeMode ? 'background:#1A1208;color:#C9A96E' : 'background:#F5EDE0;color:#8B5E3C;border:1px solid #D4C4A8'">
+                Registro libre
+              </button>
+            </div>
+            <div v-if="freeMode" class="space-y-4">
+              <div>
+                <p class="text-xs tracking-widest uppercase mb-1" style="color:#8B7355;font-family:sans-serif;letter-spacing:0.1em;">Nombre / descripción</p>
+                <input v-model="freeNombre" type="text" placeholder="Ej. Vestido azul marino" class="w-full border-b-2 bg-transparent focus:outline-none text-sm py-1" style="border-color:#C9A96E;color:#1A1208;font-family:Georgia,serif;" />
+              </div>
+              <div>
+                <p class="text-xs tracking-widest uppercase mb-1" style="color:#8B7355;font-family:sans-serif;letter-spacing:0.1em;">Categoría (opcional)</p>
+                <input v-model="freeCategoria" type="text" placeholder="Ej. Vestido, Blusa, Accesorio" class="w-full border-b-2 bg-transparent focus:outline-none text-sm py-1" style="border-color:#C9A96E;color:#1A1208;font-family:Georgia,serif;" />
+              </div>
+              <div>
+                <p class="text-xs tracking-widest uppercase mb-1" style="color:#8B7355;font-family:sans-serif;letter-spacing:0.1em;">Precio de venta</p>
+                <div class="flex items-center gap-2"><span class="text-xl font-bold" style="color:#8B5E3C;font-family:Georgia,serif;">$</span><input v-model="salePrice" type="number" min="0" class="text-2xl font-bold border-b-2 bg-transparent focus:outline-none w-28" style="font-family:Georgia,serif;color:#8B5E3C;border-color:#C9A96E;" /></div>
+              </div>
+              <div>
+                <p class="text-xs tracking-widest uppercase mb-1" style="color:#8B7355;font-family:sans-serif;letter-spacing:0.1em;">Cantidad</p>
+                <div class="flex items-center gap-2"><input v-model="saleQuantity" type="number" min="1" class="text-2xl font-bold border-b-2 bg-transparent focus:outline-none w-16" style="font-family:Georgia,serif;color:#1A1208;border-color:#C9A96E;" /><span class="text-sm" style="color:#8B7355;font-family:sans-serif;">unidades</span></div>
+              </div>
+              <div v-if="saleMessage" :class="saleMessage.type === 'success' ? 'border-green-200 text-green-700' : 'border-red-200 text-red-700'" class="px-4 py-3 border text-sm" style="font-family:sans-serif;background:#FAF7F2;">{{ saleMessage.text }}</div>
+              <button @click="registerSale" :disabled="registering || !freeNombre || !salePrice"
+                class="w-full py-4 text-xs tracking-widest uppercase transition disabled:opacity-50 active:scale-95"
+                style="background:#1A1208;color:#C9A96E;font-family:sans-serif;letter-spacing:0.2em;">
+                {{ registering ? 'Registrando...' : 'Confirmar Venta' }}
+              </button>
+            </div>
+            <div v-if="!freeMode">
             <p class="text-sm font-bold mb-4" style="color: #1A1208; font-family: Georgia, serif;">Selecciona el producto</p>
             <div class="grid grid-cols-1 gap-2">
-              <button v-for="p in products" :key="p.id" @click="selectProduct(p)"
+              <button v-for="p in products.filter(p => p.modelo !== 'Otros')" :key="p.id" @click="selectProduct(p)"
                 class="text-left p-4 border transition active:scale-95 w-full"
                 style="border-color: #D4C4A8; background: #FDFAF6;" onmouseover="this.style.background='#F5EDE0'; this.style.borderColor='#8B5E3C'" onmouseout="this.style.background='#FDFAF6'; this.style.borderColor='#D4C4A8'">
                 <div class="flex justify-between items-center"><p class="font-bold text-sm" style="font-family: Georgia, serif; color: #1A1208;">{{ p.modelo }}</p><span style="color: #8B5E3C; font-size: 18px;">→</span></div>
                 <p class="text-xs mt-0.5" style="color: #8B5E3C; font-family: sans-serif;">${{ parseFloat(p.price).toFixed(0) }} · {{ p.tipo }}</p>
               </button>
+            </div>
             </div>
           </div>
           <div v-if="step === 2">
@@ -328,7 +366,7 @@
             <p class="text-sm" style="color: #C9B99A; font-family: sans-serif;">Sin productos aun</p>
           </div>
           <div v-else class="space-y-3">
-            <div v-for="p in products" :key="p.id" style="border: 1px solid #F0E8DC;">
+            <div v-for="p in products.filter(p => p.modelo !== 'Otros')" :key="p.id" style="border: 1px solid #F0E8DC;">
               <div v-if="editingId !== p.id" class="flex justify-between items-center p-4">
                 <div class="flex items-center gap-3">
                   <img v-if="p.image_urls?.[0]" :src="p.image_urls[0]" class="w-12 h-12 object-cover" style="object-position: top;" />
@@ -505,6 +543,9 @@ const registering = ref(false)
 const saleMessage = ref(null)
 const salePrice = ref(0)
 const saleQuantity = ref(1)
+const freeMode = ref(false)
+const freeNombre = ref('')
+const freeCategoria = ref('')
 const activeTab = ref('ventas')
 const weekStats = ref({})
 const costsData = ref({ products: [], costs: [] })
@@ -521,6 +562,12 @@ const productMessage = ref(null)
 const configForm = ref({ name: '', whatsapp_number: '' })
 const configMessage = ref(null)
 const savingConfig = ref(false)
+const otrosInventoryId = computed(() => {
+  const op = products.value.find(p => p.modelo === 'Otros')
+  if (!op) return null
+  const inv = variants.value.find(v => v.product_id === op.id)
+  return inv ? inv.id : null
+})
 const availableTallas = computed(() => {
   if (!sale.value.product) return []
   const v = variants.value.filter(v => v.product_id === sale.value.product.id && v.quantity > 0)
@@ -554,10 +601,12 @@ const registerSale = async () => {
   try {
     const data = await $fetch(`${config.public.apiBase}/sales`, {
       method: 'POST', headers: authHeaders(),
-      body: { inventory_id: sale.value.inventoryId, quantity_sold: saleQuantity.value, sale_price: salePrice.value }
+      body: freeMode.value
+        ? { inventory_id: otrosInventoryId.value, quantity_sold: saleQuantity.value, sale_price: salePrice.value, free_mode: true, free_nombre: freeNombre.value, free_categoria: freeCategoria.value }
+        : { inventory_id: sale.value.inventoryId, quantity_sold: saleQuantity.value, sale_price: salePrice.value }
     })
     saleMessage.value = { type: 'success', text: data.message }
-    setTimeout(() => { saleMessage.value = null; step.value = 1; sale.value = { product: null, talla: '', color: null, inventoryId: '' } }, 2500)
+    setTimeout(() => { saleMessage.value = null; step.value = 1; sale.value = { product: null, talla: '', color: null, inventoryId: '' }; freeMode.value = false; freeNombre.value = ''; freeCategoria.value = ''; salePrice.value = 0; saleQuantity.value = 1 }, 2500)
     await loadData()
   } catch (e) {
     saleMessage.value = { type: 'error', text: e.data?.error || 'Error al registrar' }

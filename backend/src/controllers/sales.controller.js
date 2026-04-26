@@ -9,7 +9,7 @@ const registerSale = async (req, res) => {
   const client = await pool.connect();
   
   try {
-    const { inventory_id, quantity_sold = 1, sale_price, notes } = req.body;
+    const { inventory_id, quantity_sold = 1, sale_price, notes, free_mode = false, free_nombre, free_categoria } = req.body;
     const user_id = req.user.id;
     const shop_id = req.user.shop_id;
 
@@ -62,13 +62,15 @@ const registerSale = async (req, res) => {
       });
     }
 
-    // 4. Decrement inventory
+    // 4. Decrement inventory (skip if free_mode)
+    if (!free_mode) {
     await client.query(
       `UPDATE inventory 
        SET quantity = quantity - $1
        WHERE id = $2`,
       [quantity_sold, inventory_id]
     );
+    }
 
     // 5. Create sale record
     const finalPrice = sale_price !== undefined ? sale_price : inventory.default_price;
@@ -79,7 +81,7 @@ const registerSale = async (req, res) => {
         quantity_sold, sale_price, notes
       ) VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *`,
-      [shop_id, inventory_id, user_id, quantity_sold, finalPrice, notes || null]
+      [shop_id, inventory_id, user_id, quantity_sold, finalPrice, free_mode ? (free_nombre + (free_categoria ? " | " + free_categoria : "")) : (notes || null)]
     );
 
     // COMMIT TRANSACTION
@@ -91,7 +93,7 @@ const registerSale = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: `✅ Venta registrada: ${inventory.modelo} (${inventory.talla} - ${inventory.color})`,
+      message: free_mode ? `✅ Venta registrada: ${free_nombre}` : `✅ Venta registrada: ${inventory.modelo} (${inventory.talla} - ${inventory.color})`,
       sale: saleResult.rows[0],
       product: {
         modelo: inventory.modelo,
