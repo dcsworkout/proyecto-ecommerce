@@ -402,7 +402,8 @@
                   <p class="text-xs tracking-widest uppercase px-3 py-2" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.15em; background: #FAF7F2;">Stock / Variantes</p>
                   <div class="divide-y" style="border-color: #F0E8DC;">
                     <div v-for="v in variants.filter(v => v.product_id === p.id)" :key="v.id" class="flex items-center gap-2 px-3 py-2">
-                      <span class="text-xs font-bold w-8" style="font-family: Georgia, serif; color: #1A1208;">{{ v.talla }}</span>
+                      <span class="text-xs font-bold w-8" style="font-family: Georgia, serif; color: #1A1208;">{{ v.talla }} </span>
+                      <span class="text-xs w-1"> </span>
                       <span class="text-xs flex-1" style="color: #8B7355; font-family: sans-serif;">{{ v.color }}</span>
                       <input type="number" :value="v.quantity" min="0"
                         @change="updateVariantQty(v.id, $event.target.value)"
