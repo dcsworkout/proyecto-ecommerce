@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen" style="background: #F5EFE6;">
-
     <!-- Welcome Modal -->
     <div v-if="showWelcome" class="fixed inset-0 z-50 flex items-center justify-center p-4"
       style="background: rgba(26,18,8,0.85);">
@@ -31,7 +30,6 @@
         </button>
       </div>
     </div>
-
     <!-- Nav -->
     <nav style="background: #1A1208; border-bottom: 2px solid #C9A96E;">
       <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -48,7 +46,6 @@
         </div>
       </div>
     </nav>
-
     <!-- Tab bar -->
     <div style="background: #1A1208; border-bottom: 2px solid #C9A96E;">
       <div class="max-w-5xl mx-auto px-2 flex gap-0 overflow-x-auto">
@@ -69,9 +66,7 @@
         </button>
       </div>
     </div>
-
     <div class="max-w-5xl mx-auto px-4 py-6">
-
       <!-- Stats -->
       <div class="grid grid-cols-3 gap-3 mb-6">
         <div class="p-4 text-center" style="background: white; border: 1px solid #D4C4A8;">
@@ -87,12 +82,10 @@
           <p class="text-2xl font-bold" style="color: #1A1208; font-family: Georgia, serif;">${{ todayStats.revenue || 0 }}</p>
         </div>
       </div>
-
       <!-- VENTAS TAB -->
       <div v-if="activeTab === 'ventas'" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="p-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Registrar Venta</p>
-
           <div v-if="step === 1">
             <p class="text-xs mb-3" style="color: #8B7355; font-family: sans-serif;">Selecciona el producto</p>
             <div class="grid grid-cols-1 gap-2">
@@ -104,7 +97,6 @@
               </button>
             </div>
           </div>
-
           <div v-if="step === 2">
             <button @click="step = 1" class="text-xs mb-4 flex items-center gap-1" style="color: #8B5E3C; font-family: sans-serif;">← Atras</button>
             <p class="text-xs mb-3" style="color: #8B7355; font-family: sans-serif;">{{ sale.product?.modelo }} — Selecciona talla</p>
@@ -116,7 +108,6 @@
               </button>
             </div>
           </div>
-
           <div v-if="step === 3">
             <button @click="step = 2" class="text-xs mb-4 flex items-center gap-1" style="color: #8B5E3C; font-family: sans-serif;">← Atras</button>
             <p class="text-xs mb-3" style="color: #8B7355; font-family: sans-serif;">Talla {{ sale.talla }} — Selecciona color</p>
@@ -129,7 +120,6 @@
               </button>
             </div>
           </div>
-
           <div v-if="step === 4">
             <button @click="step = 3" class="text-xs mb-4 flex items-center gap-1" style="color: #8B5E3C; font-family: sans-serif;">← Atras</button>
             <div class="p-4 mb-4" style="background: #FAF7F2; border: 1px solid #E8DFD0;">
@@ -149,7 +139,6 @@
             </button>
           </div>
         </div>
-
         <!-- Recent sales -->
         <div class="p-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Ventas Recientes</p>
@@ -168,11 +157,8 @@
           </div>
         </div>
       </div>
-
-
       <!-- DOMINGO TAB -->
       <div v-if="activeTab === 'domingo'">
-
         <!-- Esta semana vs semana pasada -->
         <div class="grid grid-cols-3 gap-3 mb-6">
           <div class="p-4 text-center" style="background: white; border: 1px solid #D4C4A8;">
@@ -197,9 +183,7 @@
             </p>
           </div>
         </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-
           <!-- Top productos -->
           <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
             <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Top Productos (últimas 2 semanas)</p>
@@ -218,7 +202,6 @@
               </div>
             </div>
           </div>
-
           <!-- Mejores dias -->
           <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
             <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Mejores Días (últimas 4 semanas)</p>
@@ -238,12 +221,10 @@
             </div>
           </div>
         </div>
-
         <!-- Utilidad calculator -->
         <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Calculadora de Utilidad</p>
           <p class="text-xs mb-5" style="color: #8B7355; font-family: sans-serif;">Ingresa el costo de cada producto para calcular tu ganancia real esta semana</p>
-
           <div v-if="!costsData.products?.length" class="text-center py-8">
             <p class="text-sm" style="color: #C9B99A; font-family: sans-serif;">Sin productos registrados</p>
           </div>
@@ -270,7 +251,6 @@
                 </div>
               </div>
             </div>
-
             <!-- Utilidad neta -->
             <div class="p-4" style="background: #FAF7F2; border: 1px solid #E8DFD0;">
               <div class="flex justify-between items-center">
@@ -285,16 +265,12 @@
             </div>
           </div>
         </div>
-
       </div>
-
       <!-- PRODUCTOS TAB -->
       <div v-if="activeTab === 'productos'">
-
         <!-- Agregar producto -->
         <div class="p-6 mb-6" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-5" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Agregar Producto</p>
-
           <!-- Image upload -->
           <div class="mb-4">
             <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Foto del producto</label>
@@ -313,7 +289,6 @@
               </label>
             </div>
           </div>
-
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Nombre</label>
@@ -343,7 +318,6 @@
                 style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
             </div>
           </div>
-
           <div v-if="productMessage" :class="productMessage.type === 'success' ? 'text-green-700 border-green-200' : 'text-red-700 border-red-200'"
             class="px-4 py-3 border text-sm mb-4" style="font-family: sans-serif; background: #FAF7F2;">
             {{ productMessage.text }}
@@ -354,7 +328,6 @@
             {{ creatingProduct ? 'Guardando...' : 'Agregar Producto' }}
           </button>
         </div>
-
         <!-- Product list with edit -->
         <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Mis Productos ({{ products.length }})</p>
@@ -363,7 +336,6 @@
           </div>
           <div v-else class="space-y-3">
             <div v-for="p in products" :key="p.id" style="border: 1px solid #F0E8DC;">
-
               <!-- Vista normal -->
               <div v-if="editingId !== p.id" class="flex justify-between items-center p-4">
                 <div class="flex items-center gap-3">
@@ -376,16 +348,17 @@
                     <p class="text-xs mt-0.5" style="color: #8B7355; font-family: sans-serif;">{{ p.tipo }} · ${{ parseFloat(p.price).toFixed(0) }}</p>
                   </div>
                 </div>
-                <button @click="startEdit(p)" class="text-xs px-3 py-2 border"
-                  style="border-color: #D4C4A8; color: #8B5E3C; font-family: sans-serif;">
-                  Editar
-                </button>
-              </div>
-
+                <div class="flex gap-2">
+                  <button @click="toggleVisibility(p)" class="text-xs px-3 py-2 border" :style="p.is_visible ? 'border-color: #D4C4A8; color: #8B7355; font-family: sans-serif;' : 'border-color: #5C8A3C; color: #5C8A3C; font-family: sans-serif;'">
+                    {{ p.is_visible ? 'Ocultar' : 'Mostrar' }}
+                  </button>
+                  <button @click="startEdit(p)" class="text-xs px-3 py-2 border" style="border-color: #D4C4A8; color: #8B5E3C; font-family: sans-serif;">
+                    Editar
+                  </button>
+                </div>
               <!-- Vista edición -->
               <div v-else class="p-4">
                 <p class="text-xs tracking-widest uppercase mb-3" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.15em;">Editando: {{ p.modelo }}</p>
-
                 <!-- Edit image -->
                 <div class="mb-3">
                   <div v-if="editProduct.image_url" class="relative mb-2">
@@ -401,7 +374,6 @@
                     </label>
                   </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-3 mb-3">
                   <div>
                     <label class="text-xs block mb-1" style="color: #8B7355; font-family: sans-serif;">Nombre</label>
@@ -448,12 +420,10 @@
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -484,7 +454,6 @@ const editingId = ref(null)
 const editProduct = ref({})
 const savingEdit = ref(false)
 const productMessage = ref(null)
-
 const availableTallas = computed(() => {
   if (!sale.value.product) return []
   const v = variants.value.filter(v => v.product_id === sale.value.product.id && v.quantity > 0)
@@ -494,12 +463,10 @@ const availableColors = computed(() => {
   if (!sale.value.talla || !sale.value.product) return []
   return variants.value.filter(v => v.product_id === sale.value.product.id && v.talla === sale.value.talla && v.quantity > 0)
 })
-
 const selectProduct = (p) => { sale.value.product = p; sale.value.talla = ''; sale.value.color = null; step.value = 2 }
 const selectTalla = (t) => { sale.value.talla = t; sale.value.color = null; step.value = 3 }
 const selectColor = (v) => { sale.value.color = v; sale.value.inventoryId = v.id; salePrice.value = parseFloat(sale.value.product?.price || 0); step.value = 4 }
 const authHeaders = () => ({ Authorization: `Bearer ${token.value}` })
-
 const loadData = async () => {
   const [prods, stats, sales] = await Promise.all([
     $fetch(`${config.public.apiBase}/products/my-shop/all`, { headers: authHeaders() }),
@@ -514,7 +481,6 @@ const loadData = async () => {
     variants.value = inv.inventory || []
   } catch (e) {}
 }
-
 const registerSale = async () => {
   registering.value = true
   saleMessage.value = null
@@ -530,7 +496,6 @@ const registerSale = async () => {
     saleMessage.value = { type: 'error', text: e.data?.error || 'Error al registrar' }
   } finally { registering.value = false }
 }
-
 const createProduct = async () => {
   if (!newProduct.value.modelo || !newProduct.value.tipo || !newProduct.value.price) {
     productMessage.value = { type: 'error', text: 'Nombre, categoria y precio son requeridos' }
@@ -558,7 +523,6 @@ const createProduct = async () => {
     productMessage.value = { type: 'error', text: e.data?.error || 'Error al crear producto' }
   } finally { creatingProduct.value = false }
 }
-
 const uploadImage = async (event, target) => {
   const file = event.target.files[0]
   if (!file) return
@@ -577,6 +541,15 @@ const uploadImage = async (event, target) => {
     else editProduct.value.image_url = data.secure_url
   } catch(e) { console.error(e) }
   finally { uploading.value = false }
+}
+const toggleVisibility = async (p) => {
+  try {
+    await $fetch(`${config.public.apiBase}/products/${p.id}`, {
+      method: "PUT", headers: authHeaders(),
+      body: { is_visible: !p.is_visible }
+    })
+    await loadData()
+  } catch(e) { console.error(e) }
 }
 const startEdit = (p) => {
   editingId.value = p.id
@@ -598,8 +571,6 @@ const dismissWelcome = () => {
   showWelcome.value = false
   localStorage.setItem(`welcome_dismissed_${user.value?.id}`, '1')
 }
-
-
 const weekDiff = (key) => {
   const t = parseFloat(weekStats.value.this_week?.[key] || 0)
   const l = parseFloat(weekStats.value.last_week?.[key] || 0)
@@ -652,7 +623,6 @@ const loadWeekStats = async () => {
   } catch(e) {}
 }
 const logout = () => { localStorage.removeItem('token'); localStorage.removeItem('user'); navigateTo('/login') }
-
 onMounted(() => {
   token.value = localStorage.getItem('token') || ''
   user.value = JSON.parse(localStorage.getItem('user') || '{}')
