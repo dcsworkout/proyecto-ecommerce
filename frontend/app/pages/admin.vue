@@ -69,6 +69,11 @@
           :style="activeTab === 'config' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em; background: rgba(201,169,110,0.1);' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
           Configuracion
         </button>
+        <button @click="activeTab = 'historial'; loadHistorial()"
+          class="px-3 py-3 text-xs tracking-widest uppercase transition whitespace-nowrap flex-1 text-center"
+          :style="activeTab === 'historial' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em; background: rgba(201,169,110,0.1);' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
+          Historial
+        </button>
       </div>
     </div>
     <div class="max-w-5xl mx-auto px-4 py-6">
@@ -486,6 +491,46 @@
         </div>
       </div>
       <!-- CONFIG TAB -->
+      <!-- HISTORIAL TAB -->
+      <div v-if="activeTab === 'historial'">
+        <div class="p-4 mb-4 flex flex-wrap gap-3 items-end" style="background: white; border: 1px solid #D4C4A8;">
+          <div>
+            <p class="text-xs tracking-widest uppercase mb-1" style="color:#8B7355;font-family:sans-serif;letter-spacing:0.1em;">Desde</p>
+            <input v-model="historialFiltros.start_date" type="date" class="border px-2 py-1 text-sm bg-transparent focus:outline-none" style="border-color:#D4C4A8;color:#1A1208;font-family:sans-serif;" />
+          </div>
+          <div>
+            <p class="text-xs tracking-widest uppercase mb-1" style="color:#8B7355;font-family:sans-serif;letter-spacing:0.1em;">Hasta</p>
+            <input v-model="historialFiltros.end_date" type="date" class="border px-2 py-1 text-sm bg-transparent focus:outline-none" style="border-color:#D4C4A8;color:#1A1208;font-family:sans-serif;" />
+          </div>
+          <button @click="loadHistorial" class="px-4 py-1 text-xs tracking-widest uppercase" style="background:#1A1208;color:#C9A96E;font-family:sans-serif;">Filtrar</button>
+          <button @click="historialFiltros.start_date = ''; historialFiltros.end_date = ''; loadHistorial()" class="px-4 py-1 text-xs tracking-widest uppercase" style="border:1px solid #D4C4A8;color:#8B5E3C;font-family:sans-serif;">Limpiar</button>
+          <div class="ml-auto text-right">
+            <p class="text-xs" style="color:#8B7355;font-family:sans-serif;">{{ historialData.summary && historialData.summary.total_sales || 0 }} ventas</p>
+            <p class="text-lg font-bold" style="color:#1A1208;font-family:Georgia,serif;">${{ parseFloat(historialData.summary && historialData.summary.total_revenue || 0).toFixed(0) }}</p>
+          </div>
+        </div>
+        <div style="background: white; border: 1px solid #D4C4A8;">
+          <div v-if="historialLoading" class="text-center py-10">
+            <p class="text-sm" style="color:#C9B99A;font-family:sans-serif;">Cargando...</p>
+          </div>
+          <div v-else-if="!historialData.sales || historialData.sales.length === 0" class="text-center py-10">
+            <p class="text-sm" style="color:#C9B99A;font-family:sans-serif;">Sin ventas en este período</p>
+          </div>
+          <div v-else>
+            <div v-for="s in historialData.sales" :key="s.id" class="flex justify-between items-center px-4 py-3" style="border-bottom: 1px solid #F0E8DC;">
+              <div>
+                <p class="text-sm font-bold" style="font-family:Georgia,serif;color:#1A1208;">{{ s.notes && s.modelo === 'Otros' ? s.notes : s.modelo }}</p>
+                <p class="text-xs mt-0.5" style="color:#8B7355;font-family:sans-serif;">{{ s.notes && s.modelo === 'Otros' ? 'Registro libre' : s.talla + ' · ' + s.color }} · {{ s.seller_name }} · {{ new Date(s.sale_date).toLocaleDateString('es-MX', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) }}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-sm font-bold" style="color:#5C8A3C;font-family:Georgia,serif;">${{ parseFloat(s.total_amount).toFixed(0) }}</p>
+                <p class="text-xs" style="color:#8B7355;font-family:sans-serif;">x{{ s.quantity_sold }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div v-if="activeTab === 'config'">
         <div class="p-6 mb-4" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-5" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Datos de la Tienda</p>
@@ -560,6 +605,9 @@ const editProduct = ref({})
 const savingEdit = ref(false)
 const productMessage = ref(null)
 const configForm = ref({ name: '', whatsapp_number: '' })
+const historialData = ref({ sales: [], summary: {}, pagination: {} })
+const historialLoading = ref(false)
+const historialFiltros = ref({ start_date: '', end_date: '', page: 1, limit: 50 })
 const configMessage = ref(null)
 const savingConfig = ref(false)
 const otrosInventoryId = computed(() => {
@@ -611,6 +659,17 @@ const registerSale = async () => {
   } catch (e) {
     saleMessage.value = { type: 'error', text: e.data?.error || 'Error al registrar' }
   } finally { registering.value = false }
+}
+const loadHistorial = async () => {
+  historialLoading.value = true
+  try {
+    const params = new URLSearchParams({ limit: historialFiltros.value.limit, page: historialFiltros.value.page })
+    if (historialFiltros.value.start_date) params.append('start_date', historialFiltros.value.start_date)
+    if (historialFiltros.value.end_date) params.append('end_date', historialFiltros.value.end_date + 'T23:59:59')
+    const data = await $fetch(`${config.public.apiBase}/sales?${params}`, { headers: authHeaders() })
+    historialData.value = data
+  } catch (e) { console.error(e) }
+  finally { historialLoading.value = false }
 }
 const createProduct = async () => {
   if (!newProduct.value.modelo || !newProduct.value.tipo || !newProduct.value.price) {
