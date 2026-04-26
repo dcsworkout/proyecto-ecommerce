@@ -64,6 +64,11 @@
           :style="activeTab === 'productos' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em; background: rgba(201,169,110,0.1);' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
           Mis Productos
         </button>
+        <button @click="activeTab = 'config'"
+          class="px-3 py-3 text-xs tracking-widest uppercase transition whitespace-nowrap flex-1 text-center"
+          :style="activeTab === 'config' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em; background: rgba(201,169,110,0.1);' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
+          Configuracion
+        </button>
       </div>
     </div>
     <div class="max-w-5xl mx-auto px-4 py-6">
@@ -159,7 +164,6 @@
       </div>
       <!-- DOMINGO TAB -->
       <div v-if="activeTab === 'domingo'">
-        <!-- Esta semana vs semana pasada -->
         <div class="grid grid-cols-3 gap-3 mb-6">
           <div class="p-4 text-center" style="background: white; border: 1px solid #D4C4A8;">
             <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.12em;">Ventas semana</p>
@@ -184,7 +188,6 @@
           </div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <!-- Top productos -->
           <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
             <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Top Productos (últimas 2 semanas)</p>
             <div v-if="!weekStats.top_products?.length" class="text-center py-8">
@@ -196,13 +199,12 @@
                   <p class="text-sm font-bold" style="font-family: Georgia, serif; color: #1A1208;">{{ p.modelo }}</p>
                   <span class="text-xs" style="color: #8B5E3C; font-family: sans-serif;">{{ p.unidades }} uds</span>
                 </div>
-                <div style="background: #F0E8DC; height: 6px; border-radius: 0;">
+                <div style="background: #F0E8DC; height: 6px;">
                   <div :style="`width: ${(p.unidades / weekStats.top_products[0].unidades) * 100}%; background: #8B5E3C; height: 6px;`"></div>
                 </div>
               </div>
             </div>
           </div>
-          <!-- Mejores dias -->
           <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
             <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Mejores Días (últimas 4 semanas)</p>
             <div v-if="!weekStats.by_day?.length" class="text-center py-8">
@@ -221,7 +223,6 @@
             </div>
           </div>
         </div>
-        <!-- Utilidad calculator -->
         <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-1" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Calculadora de Utilidad</p>
           <p class="text-xs mb-5" style="color: #8B7355; font-family: sans-serif;">Ingresa el costo de cada producto para calcular tu ganancia real esta semana</p>
@@ -238,20 +239,15 @@
                 <div>
                   <label class="text-xs block mb-1" style="color: #8B7355; font-family: sans-serif;">Costo compra</label>
                   <input type="number" :value="getCost(p.id, 'costo_compra')" @input="setCost(p.id, 'costo_compra', $event.target.value)"
-                    placeholder="0"
-                    class="w-full px-3 py-2 border text-sm focus:outline-none"
+                    placeholder="0" class="w-full px-3 py-2 border text-sm focus:outline-none"
                     style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
                 </div>
                 <div class="text-right">
-                  <button @click="saveCost(p.id)"
-                    class="px-3 py-2 text-xs tracking-widest uppercase"
-                    style="background: #1A1208; color: #C9A96E; font-family: sans-serif;">
-                    Guardar
-                  </button>
+                  <button @click="saveCost(p.id)" class="px-3 py-2 text-xs tracking-widest uppercase"
+                    style="background: #1A1208; color: #C9A96E; font-family: sans-serif;">Guardar</button>
                 </div>
               </div>
             </div>
-            <!-- Utilidad neta -->
             <div class="p-4" style="background: #FAF7F2; border: 1px solid #E8DFD0;">
               <div class="flex justify-between items-center">
                 <div>
@@ -268,10 +264,8 @@
       </div>
       <!-- PRODUCTOS TAB -->
       <div v-if="activeTab === 'productos'">
-        <!-- Agregar producto -->
         <div class="p-6 mb-6" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-5" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Agregar Producto</p>
-          <!-- Image upload -->
           <div class="mb-4">
             <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Foto del producto</label>
             <div v-if="newProduct.image_url" class="mb-2 relative">
@@ -279,8 +273,7 @@
               <button @click="newProduct.image_url = ''" class="absolute top-2 right-2 text-xs px-2 py-1" style="background: #1A1208; color: #FAF7F2; font-family: sans-serif;">✕</button>
             </div>
             <div v-else>
-              <input type="file" accept="image/*" @change="uploadImage($event, 'new')" ref="fileInput"
-                class="hidden" id="fileInput" />
+              <input type="file" accept="image/*" @change="uploadImage($event, 'new')" ref="fileInput" class="hidden" id="fileInput" />
               <label for="fileInput" class="flex flex-col items-center justify-center py-8 border-2 border-dashed cursor-pointer"
                 style="border-color: #D4C4A8; font-family: sans-serif;">
                 <span class="text-2xl mb-2">📷</span>
@@ -328,7 +321,6 @@
             {{ creatingProduct ? 'Guardando...' : 'Agregar Producto' }}
           </button>
         </div>
-        <!-- Product list with edit -->
         <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Mis Productos ({{ products.length }})</p>
           <div v-if="products.length === 0" class="text-center py-8">
@@ -336,7 +328,6 @@
           </div>
           <div v-else class="space-y-3">
             <div v-for="p in products" :key="p.id" style="border: 1px solid #F0E8DC;">
-              <!-- Vista normal -->
               <div v-if="editingId !== p.id" class="flex justify-between items-center p-4">
                 <div class="flex items-center gap-3">
                   <img v-if="p.image_urls?.[0]" :src="p.image_urls[0]" class="w-12 h-12 object-cover" style="object-position: top;" />
@@ -357,10 +348,8 @@
                   </button>
                 </div>
               </div>
-              <!-- Vista edición -->
               <div v-else class="p-4">
                 <p class="text-xs tracking-widest uppercase mb-3" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.15em;">Editando: {{ p.modelo }}</p>
-                <!-- Edit image -->
                 <div class="mb-3">
                   <div v-if="editProduct.image_url" class="relative mb-2">
                     <img :src="editProduct.image_url" class="w-full object-cover" style="height: 140px; object-position: top;" />
@@ -414,14 +403,53 @@
                     style="background: #1A1208; color: #C9A96E; font-family: sans-serif;">
                     {{ savingEdit ? 'Guardando...' : 'Guardar' }}
                   </button>
-                  <button @click="editingId = null"
-                    class="px-4 py-3 text-xs border"
+                  <button @click="editingId = null" class="px-4 py-3 text-xs border"
                     style="border-color: #D4C4A8; color: #8B7355; font-family: sans-serif;">
                     Cancelar
                   </button>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <!-- CONFIG TAB -->
+      <div v-if="activeTab === 'config'">
+        <div class="p-6 mb-4" style="background: white; border: 1px solid #D4C4A8;">
+          <p class="text-xs tracking-widest uppercase mb-5" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Datos de la Tienda</p>
+          <div class="space-y-4 mb-5">
+            <div>
+              <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Nombre de la tienda</label>
+              <input v-model="configForm.name" type="text" placeholder="Ej: Tienda Familiar CS"
+                class="w-full px-4 py-3 border text-sm focus:outline-none"
+                style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
+            </div>
+            <div>
+              <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Número de WhatsApp</label>
+              <input v-model="configForm.whatsapp_number" type="text" placeholder="+52 1 999 000 0000"
+                class="w-full px-4 py-3 border text-sm focus:outline-none"
+                style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
+              <p class="text-xs mt-1" style="color: #8B7355; font-family: sans-serif;">Este número recibe los pedidos por WhatsApp de tus clientes</p>
+            </div>
+          </div>
+          <div v-if="configMessage" :class="configMessage.type === 'success' ? 'text-green-700 border-green-200' : 'text-red-700 border-red-200'"
+            class="px-4 py-3 border text-sm mb-4" style="font-family: sans-serif; background: #FAF7F2;">
+            {{ configMessage.text }}
+          </div>
+          <button @click="saveConfig" :disabled="savingConfig"
+            class="w-full py-3 text-xs tracking-widest uppercase transition disabled:opacity-50"
+            style="background: #1A1208; color: #C9A96E; font-family: sans-serif; letter-spacing: 0.2em;">
+            {{ savingConfig ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+        </div>
+        <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
+          <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Seguridad</p>
+          <div class="flex justify-between items-center py-4" style="border: 1px solid #F0E8DC; padding: 1rem;">
+            <div>
+              <p class="text-sm font-bold" style="font-family: Georgia, serif; color: #1A1208;">Cambiar Contraseña</p>
+              <p class="text-xs mt-0.5" style="color: #8B7355; font-family: sans-serif;">Actualiza tu contraseña de acceso</p>
+            </div>
+            <span class="text-xs px-3 py-1" style="background: #FFF8EC; border: 1px solid #C9A96E; color: #8B5E3C; font-family: sans-serif;">Próximamente</span>
           </div>
         </div>
       </div>
@@ -455,6 +483,9 @@ const editingId = ref(null)
 const editProduct = ref({})
 const savingEdit = ref(false)
 const productMessage = ref(null)
+const configForm = ref({ name: '', whatsapp_number: '' })
+const configMessage = ref(null)
+const savingConfig = ref(false)
 const availableTallas = computed(() => {
   if (!sale.value.product) return []
   const v = variants.value.filter(v => v.product_id === sale.value.product.id && v.quantity > 0)
@@ -508,12 +539,9 @@ const createProduct = async () => {
     await $fetch(`${config.public.apiBase}/products`, {
       method: 'POST', headers: authHeaders(),
       body: {
-        modelo: newProduct.value.modelo,
-        tipo: newProduct.value.tipo,
-        price: parseFloat(newProduct.value.price),
-        description: newProduct.value.description,
-        image_urls: newProduct.value.image_url ? [newProduct.value.image_url] : [],
-        is_visible: true
+        modelo: newProduct.value.modelo, tipo: newProduct.value.tipo,
+        price: parseFloat(newProduct.value.price), description: newProduct.value.description,
+        image_urls: newProduct.value.image_url ? [newProduct.value.image_url] : [], is_visible: true
       }
     })
     productMessage.value = { type: 'success', text: `"${newProduct.value.modelo}" agregado exitosamente` }
@@ -527,10 +555,7 @@ const createProduct = async () => {
 const uploadImage = async (event, target) => {
   const file = event.target.files[0]
   if (!file) return
-  if (file.size > 5 * 1024 * 1024) {
-    alert("La imagen es muy grande. Maximo 5MB.")
-    return
-  }
+  if (file.size > 5 * 1024 * 1024) { alert("La imagen es muy grande. Maximo 5MB."); return }
   uploading.value = true
   try {
     const formData = new FormData()
@@ -546,8 +571,7 @@ const uploadImage = async (event, target) => {
 const toggleVisibility = async (p) => {
   try {
     await $fetch(`${config.public.apiBase}/products/${p.id}`, {
-      method: "PUT", headers: authHeaders(),
-      body: { is_visible: !p.is_visible }
+      method: "PUT", headers: authHeaders(), body: { is_visible: !p.is_visible }
     })
     await loadData()
   } catch(e) { console.error(e) }
@@ -567,6 +591,30 @@ const saveEdit = async (id) => {
     await loadData()
   } catch(e) { console.error(e) }
   finally { savingEdit.value = false }
+}
+const saveConfig = async () => {
+  if (!configForm.value.name && !configForm.value.whatsapp_number) {
+    configMessage.value = { type: 'error', text: 'Ingresa al menos un campo para actualizar' }
+    return
+  }
+  savingConfig.value = true
+  configMessage.value = null
+  try {
+    const body = {}
+    if (configForm.value.name) body.name = configForm.value.name
+    if (configForm.value.whatsapp_number) body.whatsapp_number = configForm.value.whatsapp_number
+    const r = await $fetch(`${config.public.apiBase}/shops/my-shop`, {
+      method: 'PUT', headers: authHeaders(), body
+    })
+    configMessage.value = { type: 'success', text: 'Cambios guardados exitosamente' }
+    if (r.shop?.name) {
+      user.value.shop.name = r.shop.name
+      localStorage.setItem('user', JSON.stringify(user.value))
+    }
+    setTimeout(() => configMessage.value = null, 3000)
+  } catch(e) {
+    configMessage.value = { type: 'error', text: e.data?.error || 'Error al guardar' }
+  } finally { savingConfig.value = false }
 }
 const dismissWelcome = () => {
   showWelcome.value = false
@@ -629,6 +677,8 @@ onMounted(() => {
   user.value = JSON.parse(localStorage.getItem('user') || '{}')
   const dismissed = localStorage.getItem(`welcome_dismissed_${user.value?.id}`)
   if (!dismissed) showWelcome.value = true
+  configForm.value.name = user.value?.shop?.name || ''
+  configForm.value.whatsapp_number = ''
   loadData()
   loadWeekStats()
   loadCosts()
