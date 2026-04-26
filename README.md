@@ -1,282 +1,131 @@
-# 🏪 Sistema de Inventario Multi-Tienda Familiar
+# Tiendas Familiares 🛍️
 
-Sistema completo de e-commerce e inventario para negocios familiares con múltiples tiendas.
+Multi-shop e-commerce platform for a family business in Mérida, Yucatán. Customers browse products and contact via WhatsApp. Family members log in to register sales and manage inventory.
 
-## 🎯 Características
-
-### 📱 Lado Público (E-commerce)
-- Catálogo de productos de todas las tiendas
-- Filtros por tipo, talla y color
-- Detalle de productos con galería de imágenes
-- Botón directo a WhatsApp (no compras en línea)
-- Diseño responsive (móvil, tablet, desktop)
-
-### 🔐 Lado Privado (Admin Dashboard)
-- Login con autenticación JWT
-- Dashboard con métricas en tiempo real
-- Registro rápido de ventas (3 clicks)
-- Gestión de inventario automática
-- Reportes y analytics
-- Control de permisos (dueños vs empleados)
-- Multi-tenant (cada tienda ve solo sus datos)
-
-## 🛠️ Stack Tecnológico
-
-```
-┌─────────────────────────────────────┐
-│     Frontend (Nuxt 3)               │
-│  Vue 3 + Pinia + Tailwind CSS       │
-│  Deploy: Vercel (Free)              │
-└─────────────────────────────────────┘
-            │ HTTP REST API
-            ▼
-┌─────────────────────────────────────┐
-│     Backend (Express)               │
-│  Node.js + JWT Auth                 │
-│  Deploy: Railway (Free)             │
-└─────────────────────────────────────┘
-            │
-            ▼
-┌─────────────────────────────────────┐
-│     Database (PostgreSQL)           │
-│  Multi-tenant + Transactions        │
-│  Host: Railway (Free)               │
-└─────────────────────────────────────┘
-```
-
-## 📦 Estructura del Proyecto
-
-```
-proyecto-ecommerce/
-├── backend/                 # API Express + PostgreSQL
-│   ├── src/
-│   │   ├── config/         # Database, JWT config
-│   │   ├── controllers/    # Business logic
-│   │   ├── middleware/     # Auth, permissions
-│   │   ├── routes/         # API endpoints
-│   │   └── services/       # Transactions, analytics
-│   ├── database/
-│   │   ├── schema.sql      # Database schema
-│   │   └── seed.sql        # Sample data
-│   └── server.js           # Entry point
-│
-└── frontend/                # Nuxt 3 app
-    ├── pages/              # Routes (file-based routing)
-    ├── components/         # Vue components
-    ├── stores/             # Pinia stores
-    ├── composables/        # Reusable logic
-    └── nuxt.config.ts      # Nuxt configuration
-```
-
-## 🚀 Quick Start
-
-### Backend (Primero)
-
-```bash
-# 1. Instalar dependencias
-cd backend
-npm install
-
-# 2. Configurar .env
-cp .env.example .env
-# Edita .env con tus credenciales de PostgreSQL
-
-# 3. Crear base de datos
-psql -U postgres -c "CREATE DATABASE ecommerce_db;"
-
-# 4. Ejecutar migraciones
-npm run db:migrate
-
-# 5. Cargar datos de ejemplo
-npm run db:seed
-
-# 6. Iniciar servidor
-npm run dev
-# Backend corriendo en http://localhost:4000
-```
-
-### Frontend (Después)
-
-```bash
-# 1. Instalar dependencias
-cd frontend
-npm install
-
-# 2. Configurar .env
-cp .env.example .env
-# NUXT_PUBLIC_API_URL=http://localhost:4000/api
-
-# 3. Iniciar dev server
-npm run dev
-# Frontend corriendo en http://localhost:3000
-```
-
-## 📊 Modelo de Datos
-
-```sql
-shops (Tiendas)
-├── id, name, slug, whatsapp_number
-└── owner_id → users
-
-users (Dueños y Empleados)
-├── id, shop_id, email, password_hash
-├── full_name, role (owner/employee)
-└── shop_id → shops
-
-products (Productos/Modelos)
-├── id, shop_id, modelo, tipo
-├── description, price, image_urls
-└── shop_id → shops
-
-inventory (Stock por Variante)
-├── id, product_id, talla, color
-├── quantity, low_stock_alert
-└── product_id → products
-
-sales (Historial de Ventas)
-├── id, shop_id, inventory_id, user_id
-├── quantity_sold, sale_price, sale_date
-├── shop_id → shops
-├── inventory_id → inventory
-└── user_id → users
-```
-
-## 🔐 Autenticación y Permisos
-
-### Roles
-
-| Acción | Owner | Employee | Público |
-|--------|-------|----------|---------|
-| Ver catálogo | ✅ | ✅ | ✅ |
-| Registrar venta | ✅ | ✅ | ❌ |
-| Eliminar venta | ✅ | ❌ | ❌ |
-| Agregar producto | ✅ | ❌ | ❌ |
-| Ver analytics | ✅ | ✅ (limitado) | ❌ |
-
-### Login
-
-```javascript
-// POST /api/auth/login
-{
-  "email": "maria@tienda.com",
-  "password": "password123"
-}
-
-// Response
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "...",
-    "full_name": "María González",
-    "role": "owner",
-    "shop": {
-      "id": "...",
-      "name": "Tienda de María",
-      "slug": "maria"
-    }
-  }
-}
-```
-
-## 🚢 Deployment
-
-### Backend + Database (Railway)
-
-```bash
-# 1. Instalar Railway CLI
-npm i -g @railway/cli
-
-# 2. Login
-railway login
-
-# 3. Deploy
-cd backend
-railway init
-railway up
-
-# 4. Agregar PostgreSQL
-# En Railway dashboard: New → Database → PostgreSQL
-
-# 5. Configurar variables de entorno
-# JWT_SECRET, FRONTEND_URL, NODE_ENV=production
-```
-
-### Frontend (Vercel)
-
-```bash
-# 1. Instalar Vercel CLI (opcional)
-npm i -g vercel
-
-# 2. Deploy
-cd frontend
-vercel
-
-# O conecta tu repo GitHub a Vercel
-```
-
-## 💰 Costos
-
-```
-Railway (Backend + DB): $0-5/mes (free tier)
-Vercel (Frontend):      $0/mes (free tier)
-──────────────────────────────────────────
-Total estimado:         $0-5/mes 🎉
-```
-
-## 📈 Roadmap
-
-### Fase 1: Backend (Semana 1-2) ✅ IN PROGRESS
-- [x] Database schema
-- [x] Sample data
-- [x] Express server setup
-- [ ] Auth endpoints (login/register)
-- [ ] Products CRUD
-- [ ] Sales with transactions
-- [ ] Analytics queries
-
-### Fase 2: Frontend (Semana 3-4)
-- [ ] Nuxt setup
-- [ ] Public catalog with filters
-- [ ] Product detail page
-- [ ] Login page
-- [ ] Admin dashboard
-- [ ] Register sale form
-- [ ] Analytics charts
-
-### Fase 3: Deploy & Testing (Semana 5)
-- [ ] Railway deployment
-- [ ] Vercel deployment
-- [ ] Testing con la familia
-- [ ] Bug fixes & improvements
-
-### Fase 4: Mejoras Futuras
-- [ ] Subida de imágenes reales
-- [ ] Reportes en PDF/Excel
-- [ ] Notificaciones de stock bajo
-- [ ] Sistema de descuentos
-- [ ] Integración con pagos (opcional)
-
-## 🐛 Troubleshooting
-
-Ver READMEs específicos:
-- Backend: `backend/README.md`
-- Frontend: `frontend/README.md`
-
-## 🤝 Equipo
-
-- **Desarrollador:** David (Salesforce Dev transitioning to full-stack)
-- **Usuarios:** Familia (2-3 tiendas)
-- **Tech Stack:** JavaScript everywhere 💛
-
-## 📝 Notas
-
-- Este es un proyecto **familiar** sin fines comerciales
-- Contraseña por defecto de ejemplo: `password123`
-- Cambiar **TODOS** los secretos en producción
-- Los datos de ejemplo son ficticios
+**Live:** [proyecto-ecommerce-steel.vercel.app](https://proyecto-ecommerce-steel.vercel.app)
 
 ---
 
-**¿Preguntas?** Revisa los READMEs individuales o abre un issue.
+## Shops
 
-**¡A construir! 🚀**
+| Shop | URL |
+|------|-----|
+| Tienda CS | `/tiendacs` |
+| Tienda MS | `/tiendams` |
+| Admin | `/login` |
+
+---
+
+## Stack
+
+| Layer | Tech |
+|-------|------|
+| Frontend | Nuxt 4 · Vue 3 · Pinia · Tailwind → Vercel |
+| Backend | Node.js · Express → Railway |
+| Database | PostgreSQL → Railway |
+| Images | Cloudinary |
+| Auth | JWT |
+| CI/CD | Push to `master` → auto-deploy |
+
+---
+
+## Local Setup
+
+```bash
+# Clone
+git clone https://github.com/dcsworkout/proyecto-ecommerce.git
+cd proyecto-ecommerce
+
+# Backend (port 4000)
+cd backend
+npm install
+npm run dev
+
+# Frontend (port 3000)
+cd frontend
+npm install
+npm run dev
+```
+
+### Environment Variables
+
+**Railway (backend):**
+```
+DATABASE_URL=...
+JWT_SECRET=...
+NODE_ENV=production
+FRONTEND_URL=https://proyecto-ecommerce-steel.vercel.app
+```
+
+**Vercel (frontend):**
+```
+NUXT_PUBLIC_API_BASE=https://proyecto-ecommerce-production-4ed8.up.railway.app/api
+```
+
+---
+
+## Database
+
+Tables: `shops` · `users` · `products` · `inventory` · `sales` · `product_costs`
+
+```bash
+# Connect
+psql $DATABASE_URL
+```
+
+---
+
+## Features
+
+### Public
+- Dynamic landing from DB
+- Multi-shop catalog (`/tiendacs`, `/tiendams`) with filters by tipo, talla, color
+- Product detail page with talla/color selector and WhatsApp redirect
+- Luxury Yucatán design system, fully responsive
+
+### Admin
+| Tab | Description |
+|-----|-------------|
+| Registrar Venta | Catalog flow (product → talla → color → price) or **free entry** mode for off-catalog items |
+| Mi Domingo | Week-over-week stats, top products, best days, profit calculator |
+| Mis Productos | Add with Cloudinary photo upload (5MB max), inline edit, show/hide, variant management |
+| Configuración | Shop name, WhatsApp number |
+| Historial | Sales history with date range filters and period totals |
+
+### Backend
+- Multi-tenant isolation via `shop_id` from JWT
+- Inventory transactions with `FOR UPDATE` row locking (prevents race conditions)
+- Free-mode sales skip inventory decrement, store description in `notes`
+
+---
+
+## Design System
+
+```
+Background:   #FAF7F2
+Header/Footer: #2C1810
+Accent:       #8B5E3C
+Gold:         #C9A96E
+Band:         #E8D5B0
+Border:       #E8DFD0
+Fonts:        Georgia (headings) · sans-serif (body)
+```
+
+---
+
+## Deploy
+
+```bash
+git add .
+git commit -m "mensaje"
+git push  # triggers auto-deploy on Vercel + Railway
+```
+
+---
+
+## Backlog
+
+- [ ] Password change screen
+- [ ] More products for Tienda MS
+- [ ] Export CSV
+- [ ] Custom domain / subdomains per shop
