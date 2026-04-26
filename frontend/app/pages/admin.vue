@@ -678,7 +678,7 @@ onMounted(() => {
   const dismissed = localStorage.getItem(`welcome_dismissed_${user.value?.id}`)
   if (!dismissed) showWelcome.value = true
   configForm.value.name = user.value?.shop?.name || ''
-  configForm.value.whatsapp_number = ''
+  configForm.value.whatsapp_number = user.value?.shop?.whatsapp_number || ''
   loadData()
   loadWeekStats()
   loadCosts()
