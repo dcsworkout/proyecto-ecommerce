@@ -290,84 +290,165 @@
 
       <!-- PRODUCTOS TAB -->
       <div v-if="activeTab === 'productos'">
-        <!-- Upload banner -->
-        <div class="mb-6 p-4 flex items-start gap-3" style="background: #FFF8EC; border: 1px solid #C9A96E;">
-          <span style="color: #C9A96E; font-size: 18px;">⚠</span>
-          <div>
-            <p class="text-sm font-bold" style="color: #8B5E3C; font-family: Georgia, serif;">Carga de imagenes en desarrollo</p>
-            <p class="text-xs mt-1" style="color: #8B7355; font-family: sans-serif;">Muy pronto podras subir fotos directamente desde tu telefono. Por ahora puedes agregar productos con imagen de URL o sin imagen.</p>
-          </div>
-        </div>
 
-        <!-- Add product form -->
-        <div class="p-6 mb-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
+        <!-- Agregar producto -->
+        <div class="p-6 mb-6" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-5" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Agregar Producto</p>
+
+          <!-- Image upload -->
+          <div class="mb-4">
+            <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Foto del producto</label>
+            <div v-if="newProduct.image_url" class="mb-2 relative">
+              <img :src="newProduct.image_url" class="w-full object-cover" style="height: 180px; object-position: top;" />
+              <button @click="newProduct.image_url = ''" class="absolute top-2 right-2 text-xs px-2 py-1" style="background: #1A1208; color: #FAF7F2; font-family: sans-serif;">✕</button>
+            </div>
+            <div v-else>
+              <input type="file" accept="image/*" @change="uploadImage($event, 'new')" ref="fileInput"
+                class="hidden" id="fileInput" />
+              <label for="fileInput" class="flex flex-col items-center justify-center py-8 border-2 border-dashed cursor-pointer"
+                style="border-color: #D4C4A8; font-family: sans-serif;">
+                <span class="text-2xl mb-2">📷</span>
+                <span class="text-sm" style="color: #8B5E3C;">{{ uploading ? 'Subiendo...' : 'Toca para subir foto' }}</span>
+                <span class="text-xs mt-1" style="color: #8B7355;">JPG, PNG o WebP</span>
+              </label>
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
-              <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Nombre del producto</label>
+              <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Nombre</label>
               <input v-model="newProduct.modelo" type="text" placeholder="Ej: Vestido Bordado Rosa"
                 class="w-full px-4 py-3 border text-sm focus:outline-none"
                 style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
             </div>
             <div>
               <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Categoria</label>
-              <select v-model="newProduct.tipo"
-                class="w-full px-4 py-3 border text-sm focus:outline-none"
+              <select v-model="newProduct.tipo" class="w-full px-4 py-3 border text-sm focus:outline-none"
                 style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;">
                 <option value="">Seleccionar...</option>
-                <option>Vestido</option>
-                <option>Blusa</option>
-                <option>Pantalon</option>
-                <option>Falda</option>
-                <option>Accesorio</option>
+                <option>Vestido</option><option>Blusa</option><option>Pantalon</option>
+                <option>Falda</option><option>Accesorio</option><option>Guayabera</option>
               </select>
             </div>
             <div>
               <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Precio (MXN)</label>
-              <input v-model="newProduct.price" type="number" placeholder="0.00"
+              <input v-model="newProduct.price" type="number" placeholder="0"
                 class="w-full px-4 py-3 border text-sm focus:outline-none"
                 style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
             </div>
             <div>
-              <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">URL de imagen (opcional)</label>
-              <input v-model="newProduct.image_url" type="text" placeholder="https://..."
+              <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Descripcion</label>
+              <input v-model="newProduct.description" type="text" placeholder="Describe el producto..."
                 class="w-full px-4 py-3 border text-sm focus:outline-none"
                 style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
             </div>
           </div>
-          <div class="mb-4">
-            <label class="text-xs tracking-wider uppercase block mb-1.5" style="color: #8B7355; font-family: sans-serif; letter-spacing: 0.1em;">Descripcion</label>
-            <textarea v-model="newProduct.description" rows="2" placeholder="Describe el producto..."
-              class="w-full px-4 py-3 border text-sm focus:outline-none resize-none"
-              style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;"></textarea>
-          </div>
+
           <div v-if="productMessage" :class="productMessage.type === 'success' ? 'text-green-700 border-green-200' : 'text-red-700 border-red-200'"
             class="px-4 py-3 border text-sm mb-4" style="font-family: sans-serif; background: #FAF7F2;">
             {{ productMessage.text }}
           </div>
-          <button @click="createProduct" :disabled="creatingProduct"
+          <button @click="createProduct" :disabled="creatingProduct || uploading"
             class="w-full py-3 text-xs tracking-widest uppercase transition disabled:opacity-50"
             style="background: #1A1208; color: #C9A96E; font-family: sans-serif; letter-spacing: 0.2em;">
             {{ creatingProduct ? 'Guardando...' : 'Agregar Producto' }}
           </button>
         </div>
 
-        <!-- Product list -->
-        <div class="p-6" style="background: white; border: 1px solid #D4C4A8; box-shadow: 0 1px 3px rgba(26,18,8,0.06);">
+        <!-- Product list with edit -->
+        <div class="p-6" style="background: white; border: 1px solid #D4C4A8;">
           <p class="text-xs tracking-widest uppercase mb-4" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.18em;">Mis Productos ({{ products.length }})</p>
           <div v-if="products.length === 0" class="text-center py-8">
             <p class="text-sm" style="color: #C9B99A; font-family: sans-serif;">Sin productos aun</p>
           </div>
-          <div v-else class="space-y-2">
-            <div v-for="p in products" :key="p.id" class="flex justify-between items-center py-3"
-              style="border-bottom: 1px solid #F0E8DC;">
-              <div>
-                <p class="text-sm font-bold" style="font-family: Georgia, serif; color: #1A1208;">{{ p.modelo }}</p>
-                <p class="text-xs mt-0.5" style="color: #8B7355; font-family: sans-serif;">{{ p.tipo }} · ${{ parseFloat(p.price).toFixed(0) }}</p>
+          <div v-else class="space-y-3">
+            <div v-for="p in products" :key="p.id" style="border: 1px solid #F0E8DC;">
+
+              <!-- Vista normal -->
+              <div v-if="editingId !== p.id" class="flex justify-between items-center p-4">
+                <div class="flex items-center gap-3">
+                  <img v-if="p.image_urls?.[0]" :src="p.image_urls[0]" class="w-12 h-12 object-cover" style="object-position: top;" />
+                  <div v-else class="w-12 h-12 flex items-center justify-center" style="background: #EDE8DF;">
+                    <span style="color: #C9A96E;">✦</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold" style="font-family: Georgia, serif; color: #1A1208;">{{ p.modelo }}</p>
+                    <p class="text-xs mt-0.5" style="color: #8B7355; font-family: sans-serif;">{{ p.tipo }} · ${{ parseFloat(p.price).toFixed(0) }}</p>
+                  </div>
+                </div>
+                <button @click="startEdit(p)" class="text-xs px-3 py-2 border"
+                  style="border-color: #D4C4A8; color: #8B5E3C; font-family: sans-serif;">
+                  Editar
+                </button>
               </div>
-              <span class="text-xs px-2 py-1 border" style="border-color: #E8DFD0; color: #8B5E3C; font-family: sans-serif;">
-                {{ p.is_visible ? 'Visible' : 'Oculto' }}
-              </span>
+
+              <!-- Vista edición -->
+              <div v-else class="p-4">
+                <p class="text-xs tracking-widest uppercase mb-3" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.15em;">Editando: {{ p.modelo }}</p>
+
+                <!-- Edit image -->
+                <div class="mb-3">
+                  <div v-if="editProduct.image_url" class="relative mb-2">
+                    <img :src="editProduct.image_url" class="w-full object-cover" style="height: 140px; object-position: top;" />
+                    <button @click="editProduct.image_url = ''" class="absolute top-2 right-2 text-xs px-2 py-1" style="background: #1A1208; color: #FAF7F2;">✕</button>
+                  </div>
+                  <div v-else>
+                    <input type="file" accept="image/*" @change="uploadImage($event, 'edit')" :id="`editFile_${p.id}`" class="hidden" />
+                    <label :for="`editFile_${p.id}`" class="flex items-center gap-2 py-3 px-4 border border-dashed cursor-pointer"
+                      style="border-color: #D4C4A8; font-family: sans-serif;">
+                      <span>📷</span>
+                      <span class="text-sm" style="color: #8B5E3C;">{{ uploading ? 'Subiendo...' : 'Cambiar foto' }}</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                  <div>
+                    <label class="text-xs block mb-1" style="color: #8B7355; font-family: sans-serif;">Nombre</label>
+                    <input v-model="editProduct.modelo" type="text" class="w-full px-3 py-2 border text-sm focus:outline-none"
+                      style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
+                  </div>
+                  <div>
+                    <label class="text-xs block mb-1" style="color: #8B7355; font-family: sans-serif;">Precio</label>
+                    <input v-model="editProduct.price" type="number" class="w-full px-3 py-2 border text-sm focus:outline-none"
+                      style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
+                  </div>
+                  <div>
+                    <label class="text-xs block mb-1" style="color: #8B7355; font-family: sans-serif;">Categoria</label>
+                    <select v-model="editProduct.tipo" class="w-full px-3 py-2 border text-sm focus:outline-none"
+                      style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;">
+                      <option>Vestido</option><option>Blusa</option><option>Pantalon</option>
+                      <option>Falda</option><option>Accesorio</option><option>Guayabera</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-xs block mb-1" style="color: #8B7355; font-family: sans-serif;">Visible</label>
+                    <select v-model="editProduct.is_visible" class="w-full px-3 py-2 border text-sm focus:outline-none"
+                      style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;">
+                      <option :value="true">Visible</option>
+                      <option :value="false">Oculto</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="text-xs block mb-1" style="color: #8B7355; font-family: sans-serif;">Descripcion</label>
+                  <input v-model="editProduct.description" type="text" class="w-full px-3 py-2 border text-sm focus:outline-none"
+                    style="border-color: #E8DFD0; font-family: sans-serif; color: #1A1208;" />
+                </div>
+                <div class="flex gap-2">
+                  <button @click="saveEdit(p.id)" :disabled="savingEdit"
+                    class="flex-1 py-3 text-xs tracking-widest uppercase disabled:opacity-50"
+                    style="background: #1A1208; color: #C9A96E; font-family: sans-serif;">
+                    {{ savingEdit ? 'Guardando...' : 'Guardar' }}
+                  </button>
+                  <button @click="editingId = null"
+                    class="px-4 py-3 text-xs border"
+                    style="border-color: #D4C4A8; color: #8B7355; font-family: sans-serif;">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -398,6 +479,10 @@ const pendingCosts = ref({})
 const showWelcome = ref(false)
 const newProduct = ref({ modelo: '', tipo: '', price: '', description: '', image_url: '' })
 const creatingProduct = ref(false)
+const uploading = ref(false)
+const editingId = ref(null)
+const editProduct = ref({})
+const savingEdit = ref(false)
 const productMessage = ref(null)
 
 const availableTallas = computed(() => {
@@ -474,6 +559,37 @@ const createProduct = async () => {
   } finally { creatingProduct.value = false }
 }
 
+const uploadImage = async (event, target) => {
+  const file = event.target.files[0]
+  if (!file) return
+  uploading.value = true
+  try {
+    const formData = new FormData()
+    formData.append("file", file)
+    formData.append("upload_preset", "tiendas_familiares")
+    const r = await fetch("https://api.cloudinary.com/v1_1/dpyv9nuyp/image/upload", { method: "POST", body: formData })
+    const data = await r.json()
+    if (target === "new") newProduct.value.image_url = data.secure_url
+    else editProduct.value.image_url = data.secure_url
+  } catch(e) { console.error(e) }
+  finally { uploading.value = false }
+}
+const startEdit = (p) => {
+  editingId.value = p.id
+  editProduct.value = { modelo: p.modelo, tipo: p.tipo, price: p.price, description: p.description || "", is_visible: p.is_visible, image_url: p.image_urls?.[0] || "" }
+}
+const saveEdit = async (id) => {
+  savingEdit.value = true
+  try {
+    await $fetch(`${config.public.apiBase}/products/${id}`, {
+      method: "PUT", headers: authHeaders(),
+      body: { modelo: editProduct.value.modelo, tipo: editProduct.value.tipo, price: parseFloat(editProduct.value.price), description: editProduct.value.description, image_urls: editProduct.value.image_url ? [editProduct.value.image_url] : [], is_visible: editProduct.value.is_visible }
+    })
+    editingId.value = null
+    await loadData()
+  } catch(e) { console.error(e) }
+  finally { savingEdit.value = false }
+}
 const dismissWelcome = () => {
   showWelcome.value = false
   if (user.value?.email !== 'david@tiendacs.com') { localStorage.setItem(`welcome_dismissed_${user.value?.id}`, '1') }
