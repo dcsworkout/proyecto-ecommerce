@@ -596,7 +596,7 @@ const saveEdit = async (id) => {
 }
 const dismissWelcome = () => {
   showWelcome.value = false
-  if (user.value?.email !== 'david@tiendacs.com') { localStorage.setItem(`welcome_dismissed_${user.value?.id}`, '1') }
+  localStorage.setItem(`welcome_dismissed_${user.value?.id}`, '1') }
 }
 
 
@@ -657,7 +657,7 @@ onMounted(() => {
   token.value = localStorage.getItem('token') || ''
   user.value = JSON.parse(localStorage.getItem('user') || '{}')
   const dismissed = localStorage.getItem(`welcome_dismissed_${user.value?.id}`)
-  if (!dismissed || user.value?.email === 'david@tiendacs.com') showWelcome.value = true
+  if (!dismissed) showWelcome.value = true
   loadData()
   loadWeekStats()
   loadCosts()
