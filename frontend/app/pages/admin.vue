@@ -562,6 +562,10 @@ const createProduct = async () => {
 const uploadImage = async (event, target) => {
   const file = event.target.files[0]
   if (!file) return
+  if (file.size > 5 * 1024 * 1024) {
+    alert("La imagen es muy grande. Maximo 5MB.")
+    return
+  }
   uploading.value = true
   try {
     const formData = new FormData()
