@@ -54,17 +54,17 @@
       <div class="max-w-5xl mx-auto px-2 flex gap-0 overflow-x-auto">
         <button @click="activeTab = 'ventas'"
           class="px-3 py-3 text-xs tracking-widest uppercase transition whitespace-nowrap flex-1 text-center"
-          :style="activeTab === 'ventas' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em;' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
+          :style="activeTab === 'ventas' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em; background: rgba(201,169,110,0.1);' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
           Registrar Venta
         </button>
         <button @click="activeTab = 'domingo'"
           class="px-3 py-3 text-xs tracking-widest uppercase transition whitespace-nowrap flex-1 text-center"
-          :style="activeTab === 'domingo' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em;' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
+          :style="activeTab === 'domingo' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em; background: rgba(201,169,110,0.1);' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
           Mi Domingo
         </button>
         <button @click="activeTab = 'productos'"
           class="px-3 py-3 text-xs tracking-widest uppercase transition whitespace-nowrap flex-1 text-center"
-          :style="activeTab === 'productos' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em;' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
+          :style="activeTab === 'productos' ? 'color: #C9A96E; border-bottom: 2px solid #C9A96E; margin-bottom: -2px; font-family: sans-serif; letter-spacing: 0.15em; background: rgba(201,169,110,0.1);' : 'color: #8B7355; font-family: sans-serif; letter-spacing: 0.15em;'">
           Mis Productos
         </button>
       </div>
@@ -97,9 +97,9 @@
             <p class="text-xs mb-3" style="color: #8B7355; font-family: sans-serif;">Selecciona el producto</p>
             <div class="grid grid-cols-1 gap-2">
               <button v-for="p in products" :key="p.id" @click="selectProduct(p)"
-                class="text-left p-4 border transition hover:border-amber-600 active:scale-95"
-                style="border-color: #E8DFD0;">
-                <p class="font-bold text-sm" style="font-family: Georgia, serif; color: #1A1208;">{{ p.modelo }}</p>
+                class="text-left p-4 border transition active:scale-95 w-full"
+                style="border-color: #D4C4A8; background: #FDFAF6;" onmouseover="this.style.background='#F5EDE0'; this.style.borderColor='#8B5E3C'" onmouseout="this.style.background='#FDFAF6'; this.style.borderColor='#D4C4A8'">
+                <div class="flex justify-between items-center"><p class="font-bold text-sm" style="font-family: Georgia, serif; color: #1A1208;">{{ p.modelo }}</p><span style="color: #8B5E3C; font-size: 18px;">→</span></div>
                 <p class="text-xs mt-0.5" style="color: #8B5E3C; font-family: sans-serif;">${{ parseFloat(p.price).toFixed(0) }} · {{ p.tipo }}</p>
               </button>
             </div>
@@ -123,7 +123,7 @@
             <div class="grid grid-cols-2 gap-2">
               <button v-for="v in availableColors" :key="v.id" @click="selectColor(v)"
                 class="p-3 text-left border transition active:scale-95"
-                style="border-color: #E8DFD0;">
+                style="border-color: #D4C4A8; background: #FDFAF6;" onmouseover="this.style.background='#F5EDE0'; this.style.borderColor='#8B5E3C'" onmouseout="this.style.background='#FDFAF6'; this.style.borderColor='#D4C4A8'">
                 <p class="text-sm font-bold" style="color: #1A1208; font-family: Georgia, serif;">{{ v.color }}</p>
                 <p class="text-xs" style="color: #8B7355; font-family: sans-serif;">{{ v.quantity }} disponibles</p>
               </button>
