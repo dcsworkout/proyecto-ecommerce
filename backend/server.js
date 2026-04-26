@@ -84,6 +84,8 @@ app.use('/api/inventory', inventoryRoutes);
 
 const analyticsRoutes = require('./src/routes/analytics.routes');
 app.use('/api/analytics', analyticsRoutes);
+const shopsRoutes = require('./src/routes/shops.routes');
+app.use('/api/shops', shopsRoutes);
 
 // ============================================
 // ERROR HANDLING

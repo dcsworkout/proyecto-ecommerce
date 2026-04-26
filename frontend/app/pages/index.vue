@@ -8,25 +8,20 @@
     </header>
 
     <div style="background: #E8D5B0;" class="text-center py-3">
-      <p class="text-xs tracking-widest uppercase" style="letter-spacing: 0.25em; font-family: sans-serif;">
+      <p class="text-xs tracking-widest uppercase" style="color: #5C4A32; letter-spacing: 0.25em; font-family: sans-serif;">
         Selecciona una tienda para ver sus productos
       </p>
     </div>
 
     <main class="flex-1 max-w-3xl mx-auto px-6 py-16 w-full">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <NuxtLink to="/tiendacs" class="shop-card group block" style="border: 1px solid #E8DFD0; background: white;">
+      <div v-if="loading" class="flex justify-center py-16">
+        <div class="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style="border-color: #8B5E3C; border-top-color: transparent;"></div>
+      </div>
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <NuxtLink v-for="shop in shops" :key="shop.id" :to="`/${shop.slug}`" class="shop-card block" style="border: 1px solid #E8DFD0; background: white;">
           <div class="p-10 text-center">
             <p class="text-4xl mb-5" style="color: #C9A96E;">✦</p>
-            <h2 class="shop-title text-lg font-bold tracking-widest uppercase mb-3" style="letter-spacing: 0.15em; color: #1A1208;">Tienda Familiar CS</h2>
-            <p class="shop-sub text-xs tracking-widest uppercase" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.2em;">Ver catalogo →</p>
-          </div>
-        </NuxtLink>
-
-        <NuxtLink to="/tiendajeu" class="shop-card group block" style="border: 1px solid #E8DFD0; background: white;">
-          <div class="p-10 text-center">
-            <p class="text-4xl mb-5" style="color: #C9A96E;">✦</p>
-            <h2 class="shop-title text-lg font-bold tracking-widest uppercase mb-3" style="letter-spacing: 0.15em; color: #1A1208;">Tienda Jeu</h2>
+            <h2 class="shop-title text-lg font-bold tracking-widest uppercase mb-3" style="letter-spacing: 0.15em; color: #1A1208;">{{ shop.name }}</h2>
             <p class="shop-sub text-xs tracking-widest uppercase" style="color: #8B5E3C; font-family: sans-serif; letter-spacing: 0.2em;">Ver catalogo →</p>
           </div>
         </NuxtLink>
@@ -42,17 +37,23 @@
   </div>
 </template>
 
+<script setup>
+const config = useRuntimeConfig()
+const shops = ref([])
+const loading = ref(true)
+
+onMounted(async () => {
+  try {
+    const r = await $fetch(`${config.public.apiBase}/shops`)
+    shops.value = r.shops || []
+  } catch (e) {}
+  finally { loading.value = false }
+})
+</script>
+
 <style scoped>
-.shop-card {
-  transition: background 0.3s;
-}
-.shop-card:hover {
-  background: #8B5E3C !important;
-}
-.shop-card:hover .shop-title {
-  color: #FAF7F2 !important;
-}
-.shop-card:hover .shop-sub {
-  color: #C9A96E !important;
-}
+.shop-card { transition: background 0.3s; }
+.shop-card:hover { background: #8B5E3C !important; }
+.shop-card:hover .shop-title { color: #FAF7F2 !important; }
+.shop-card:hover .shop-sub { color: #C9A96E !important; }
 </style>
